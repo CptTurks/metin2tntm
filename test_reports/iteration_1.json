@@ -1,0 +1,24 @@
+{
+  "summary": "Frontend-only Playwright testing (1920x800) of 3 new features on the Metin2 PvP mock site: PopupAd (once-per-session), SortBar sorting on Home/Category/Search, and system badges on server rows. Backend testing skipped as instructed (no backend). All 5 requested feature areas PASSED. Verified: popup appears ~700ms after fresh session load with 796x449 box, ad image loads (unsplash 200, naturalWidth=1000), title 'HasMt2 — Büyük Açılış! 1-105 Emek Server', 'Hemen Katıl' CTA, link href=https://discord.gg/topmetin2pvp; X close works and sets sessionStorage tm2_popup_seen='1'; after reload in same session popup does NOT reappear; backdrop click also closes. Home SortBar default active = sort-btn-date (order Elora2 2026-01-14 > SoloMT2 01-12 > ManasMT2 01-10 > WarZoneMT2 01-04 correct); likes sort => [5,4,3,2] desc; clicks sort => totals [32,18,12,5] desc; VIP section order (DragonPvP, PhoenixMT2) unchanged by all three sorts. Category /kategori/farm-server default active = likes, SortBar works. Search /ara?q=mt2 => 4 results, default active = likes ([6,5,3,2] desc), date sort reorders correctly. System badges: 6 containers (server-sys-badges-<id>) render, max 4 labelled badges + '+N' overflow chip as designed. No console errors; only failed request was Cloudflare /cdn-cgi/rum (unrelated).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "PopupAd modal", "issues": ["sessionStorage 'tm2_popup_seen' is only written on close/CTA click — if the user reloads without closing, the popup shows again. Consider marking seen on first display.", "No Escape-key close and no body scroll lock while the modal is open (background page still scrollable).", "Modal is not focus-trapped / lacks role=dialog + aria-modal for a11y."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "SortBar.sortServers date comparison uses string compare on createdAt (ISO dates) — works for 'YYYY-MM-DD' but will break if any user-added server stores a different date format; consider Date.parse with numeric fallback.",
+    "likes/clicks sorts have no deterministic tie-breaker (unlike date sort which falls back to b.id - a.id); equal-value rows may reorder unpredictably across renders."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (no backend)", "frontend": "100%"},
+  "seed_data_creation": "None — used existing mock.js/localStorage data. sessionStorage was cleared during testing only.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All new features (PopupAd, SortBar on Home/Category/Search, system badges) verified working end-to-end. To see the popup again you must run sessionStorage.clear() then reload. Sort assertions were made by reading .srv-row DOM (likes from .srv-badge-like, clicks from first two .srv-right .srv-click-badge). Only open items are minor popup UX/a11y polish items.",
+  "rca_of_the_issue": "N/A — no defects reproduced. Initial naturalWidth=0 reading for the popup image was a measurement-timing artifact; a re-run with an explicit load wait confirmed the image loads (HTTP 200, naturalWidth 1000)."
+}

@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { CATEGORY_LABELS, CATEGORIES } from '../mock/mock';
 import ServerRow from '../components/ServerRow';
+import SortBar, { sortServers } from '../components/SortBar';
 
 export default function CategoryPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { servers } = useApp();
-  const list = servers.filter((s) => s.category === slug).sort((a, b) => b.likes - a.likes);
+  const [sort, setSort] = useState('likes');
+  const list = sortServers(servers.filter((s) => s.category === slug), sort);
   const cat = CATEGORIES.find((c) => c.slug === slug);
 
   return (
@@ -28,7 +30,12 @@ export default function CategoryPage() {
 
       {list.length === 0 ? (
         <div className="card"><div className="empty-state">Bu kategoride henüz server yok. İlk sen ekle!</div></div>
-      ) : list.map((s) => <ServerRow key={s.id} s={s} />)}
+      ) : (
+        <>
+          <SortBar value={sort} onChange={setSort} />
+          {list.map((s) => <ServerRow key={s.id} s={s} />)}
+        </>
+      )}
     </>
   );
 }

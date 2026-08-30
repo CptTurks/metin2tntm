@@ -2,13 +2,17 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Home as HomeIcon, MessageCircle, ThumbsUp, ArrowRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { CATEGORY_LABELS } from '../mock/mock';
+import { CATEGORY_LABELS, SYSTEM_FEATURE_LABELS } from '../mock/mock';
 import { toast } from 'sonner';
 
 export default function ServerRow({ s }) {
   const navigate = useNavigate();
   const { voteServer, trackClick, votes } = useApp();
   const f = s.features;
+  const sys = s.system || {};
+  const enabledSys = Object.keys(SYSTEM_FEATURE_LABELS).filter((k) => sys[k]);
+  const shownSys = enabledSys.slice(0, 4);
+  const extraSys = enabledSys.length - shownSys.length;
 
   const doVote = (e) => {
     e.preventDefault();
@@ -35,6 +39,14 @@ export default function ServerRow({ s }) {
             <span className="srv-badge srv-badge-like">👍 {s.likes} Beğeni</span>
             <a className="srv-badge srv-badge-cat" href={`#${s.category}`} onClick={(e) => { e.preventDefault(); navigate(`/kategori/${s.category}`); }}>🗂️ {CATEGORY_LABELS[s.category]}</a>
           </div>
+          {shownSys.length > 0 && (
+            <div className="srv-sys-badges" data-testid={`server-sys-badges-${s.id}`}>
+              {shownSys.map((k) => (
+                <span key={k} className="srv-sys-badge">✦ {SYSTEM_FEATURE_LABELS[k]}</span>
+              ))}
+              {extraSys > 0 && <span className="srv-sys-badge srv-sys-badge--more">+{extraSys}</span>}
+            </div>
+          )}
         </div>
       </div>
 

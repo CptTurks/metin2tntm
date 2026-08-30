@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, Crown } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { WelcomeHero, ServerModes, StatsRow, TopBanners } from '../components/HomeSections';
 import ServerRow from '../components/ServerRow';
+import SortBar, { sortServers } from '../components/SortBar';
 import { AD_BANNERS } from '../mock/mock';
 
 export default function Home() {
   const { servers } = useApp();
   const navigate = useNavigate();
+  const [sort, setSort] = useState('date');
   const vipServers = servers.filter((s) => s.vip).sort((a, b) => b.likes - a.likes);
-  const normalServers = servers.filter((s) => !s.vip).sort((a, b) => b.id - a.id);
+  const normalServers = sortServers(servers.filter((s) => !s.vip), sort);
 
   return (
     <>
@@ -42,6 +44,7 @@ export default function Home() {
         <button className="m2-addBtn" onClick={() => navigate('/sunucu-ekle')}>🚀 Server Ekle</button>
       </div>
 
+      <SortBar value={sort} onChange={setSort} />
       {normalServers.map((s) => <ServerRow key={s.id} s={s} />)}
 
       <StatsRow />

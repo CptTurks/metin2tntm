@@ -75,3 +75,18 @@ Kategori kart görselleri `categories.image`, server kapakları `servers.banner`
 ### v1.2
 - **Eklenen**: Sunucu Ekle formu **3 sekmeli** oldu (Server Bilgileri / Genel Özellikler / **Sistem Özellikleri**).
 - **Eklenen**: Sistem Özellikleri (8 alan) — server detay sayfasında da ✅/❌ listeleniyor.
+### v1.3
+- **Eklenen**: **Pop-Up Reklam** — girişte açılan 800x450 modal reklam. Bileşen: `components/PopupAd.jsx`.
+  Oturumda **bir kez** gösterilir (`sessionStorage` anahtarı `tm2_popup_seen`), 700ms gecikmeyle açılır,
+  dışarı tıkla/× ile kapanır. Veri: `mock.js` → `POPUP_AD {img,url,title}`. CSS: `.popup-ad-back/-box/-tag/-close/-cta/-title/-btn`.
+  PHP tarafında: aktif "Pop-UP Reklam Alanı" paketi varsa view'a bas, Alpine `x-data="{open:true}"` + `x-show`, sessionStorage kontrolü JS ile.
+- **Eklenen**: **Sıralama çubuğu (SortBar)** — Beğeni / Tarih / Tıklanma. Bileşen: `components/SortBar.jsx`
+  (+ export edilen `sortServers(list, sort)` yardımcı fonksiyonu). Anasayfa (varsayılan: Tarih), Kategori & Arama
+  (varsayılan: Beğeni) sayfalarında kullanılıyor. VIP bölümü sıralamadan **etkilenmez** (hep beğeniye göre).
+  CSS: `.sort-bar/.sort-bar__label/.sort-btn(.active)`. Sıralama alanları: `likes`, `createdAt` (date), `webClicks+discordClicks` (clicks).
+- **Eklenen**: **Sistem Rozetleri** — sunucu kartında (sol kolon) açık sistem özelliklerinden ilk 4 tanesi küçük
+  rozet olarak, fazlası `+N` olarak gösterilir. Kaynak: `server.system` + `SYSTEM_FEATURE_LABELS`.
+  CSS: `.srv-sys-badges/.srv-sys-badge(.srv-sys-badge--more)`.
+- **Değişen**: Pop-Up artık **ilk gösterimde** `tm2_popup_seen` yazar (kapatmadan yenilense de tekrar açılmaz).
+- **Değişen**: `sortServers` — `likes`/`clicks` için deterministik eşitlik bozucu (`b.id - a.id`) eklendi.
+- **Değişen (UI)**: Giriş/Kayıt modalı (`.modal-box`) dikeyde biraz aşağı alındı (`margin-top:6vh`) — çok yukarıda kalıyordu.

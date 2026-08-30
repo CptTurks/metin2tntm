@@ -1,22 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { ChevronRight, Search as SearchIcon } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { CATEGORY_LABELS } from '../mock/mock';
 import ServerRow from '../components/ServerRow';
+import SortBar, { sortServers } from '../components/SortBar';
 
 export default function SearchPage() {
   const { servers } = useApp();
   const { search } = useLocation();
   const navigate = useNavigate();
+  const [sort, setSort] = useState('likes');
   const q = (new URLSearchParams(search).get('q') || '').trim().toLowerCase();
 
   const results = q
-    ? servers.filter((s) =>
+    ? sortServers(servers.filter((s) =>
         s.name.toLowerCase().includes(q) ||
         s.title.toLowerCase().includes(q) ||
         (CATEGORY_LABELS[s.category] || '').toLowerCase().includes(q)
-      )
+      ), sort)
     : [];
 
   return (
@@ -31,7 +33,12 @@ export default function SearchPage() {
       </div>
       {results.length === 0 ? (
         <div className="card"><div className="empty-state">Aramanızla eşleşen server bulunamadı. Başka bir kelime deneyin.</div></div>
-      ) : results.map((s) => <ServerRow key={s.id} s={s} />)}
+      ) : (
+        <>
+          <SortBar value={sort} onChange={setSort} />
+          {results.map((s) => <ServerRow key={s.id} s={s} />)}
+        </>
+      )}
     </>
   );
 }

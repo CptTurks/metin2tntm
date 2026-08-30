@@ -1,10 +1,12 @@
 import React from 'react';
 import Header from './Header';
 import Footer, { AdSlot } from './Footer';
+import PopupAd from './PopupAd';
 
 export default function Layout({ children }) {
   return (
     <div className="App">
+      <PopupAd />
       <Header />
       <div className="page">
         <div className="content-grid">

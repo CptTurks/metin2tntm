@@ -162,6 +162,13 @@ export const MOCK_USER = {
 // WhatsApp iletişim numarası (reklam talepleri için)
 export const WA_NUMBER = '905452249305';
 
+// Girişte açılan Pop-Up reklam (800x450) — reklam fiyatları sayfasındaki "Pop-UP Reklam Alanı"
+export const POPUP_AD = {
+  img: 'https://images.unsplash.com/photo-1668261834846-eb10673033bf?crop=entropy&cs=srgb&fm=jpg&q=85&w=1000',
+  url: 'https://discord.gg/topmetin2pvp',
+  title: 'HasMt2 — Büyük Açılış! 1-105 Emek Server',
+};
+
 // Sağ/Sol dikey "sayfa giydirme" (page skin) bannerları (portrait ~220x900)
 export const SIDE_BANNERS = {
   left: 'https://images.unsplash.com/photo-1779274243035-9a53377374c2?crop=entropy&cs=srgb&fm=jpg&q=85&w=440',
