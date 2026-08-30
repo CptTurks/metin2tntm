@@ -119,6 +119,33 @@ export const FEATURE_LABELS = {
   pet: 'Levelli Pet', binek: 'Binek Sistemi', kostum: 'Kostümler', beceri: 'Yeni Beceriler',
 };
 
+// Sistem Özellikleri (Sunucu Ekle - 3. sekme)
+export const SYSTEM_FEATURE_LABELS = {
+  kEnvanter: '(K) Envanter',
+  bossTakip: 'Boss Takip Sistemi',
+  guvenliPc: 'Güvenli PC Girişi',
+  loncaAjan: 'Lonca Ajan Sistemi',
+  ticaretCami: 'Ticaret Camı',
+  yardimciSaman: 'Yardımcı Şaman',
+  cevrimdisiPazar: 'Çevrimdışı Pazar',
+  itemKilitleme: 'İtem Kilitleme Sistemi',
+};
+
+export const DEFAULT_SYSTEM = {
+  kEnvanter: true, bossTakip: true, guvenliPc: true, loncaAjan: true,
+  ticaretCami: true, yardimciSaman: true, cevrimdisiPazar: true, itemKilitleme: true,
+};
+
+// Mevcut mock serverlere varsayılan sistem özellikleri ekle
+SERVERS.forEach((s, i) => {
+  if (!s.system) {
+    s.system = { ...DEFAULT_SYSTEM };
+    // biraz çeşitlilik: bazı serverlerde bazı özellikler kapalı
+    if (i % 2 === 1) { s.system.cevrimdisiPazar = false; s.system.loncaAjan = false; }
+    if (i % 3 === 0) { s.system.yardimciSaman = false; }
+  }
+});
+
 export const SITE_STATS = {
   serverCount: 6, memberCount: 1284, totalVotes: 4127, dailyVisits: 8563,
 };

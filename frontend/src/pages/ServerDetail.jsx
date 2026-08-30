@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ChevronRight, Home as HomeIcon, MessageCircle, ThumbsUp, Star, ListChecks, MessagesSquare } from 'lucide-react';
+import { ChevronRight, Home as HomeIcon, MessageCircle, ThumbsUp, Star, ListChecks, MessagesSquare, Cpu } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { CATEGORY_LABELS, FEATURE_LABELS } from '../mock/mock';
+import { CATEGORY_LABELS, FEATURE_LABELS, SYSTEM_FEATURE_LABELS, DEFAULT_SYSTEM } from '../mock/mock';
 import AuthModal from '../components/AuthModal';
 import { toast } from 'sonner';
 
@@ -34,6 +34,8 @@ export default function ServerDetail() {
   const goExt = (url, type) => { trackClick(s.id, type); window.open(url, '_blank', 'noopener'); };
 
   const featureKeys = Object.keys(FEATURE_LABELS);
+  const sys = s.system || DEFAULT_SYSTEM;
+  const sysKeys = Object.keys(SYSTEM_FEATURE_LABELS);
 
   return (
     <>
@@ -68,6 +70,19 @@ export default function ServerDetail() {
               ))}
             </div>
             <p style={{ marginTop: 18, color: '#cfe0ff', lineHeight: 1.7 }}>{s.description}</p>
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="card-head"><Cpu size={18} /> Sistem Özellikleri</div>
+          <div className="card-body">
+            <div className="feature-grid">
+              {sysKeys.map((k) => (
+                <div key={k} className={`feature-chip ${sys[k] ? 'yes' : 'no'}`}>
+                  {sys[k] ? '✅' : '❌'} {SYSTEM_FEATURE_LABELS[k]} {sys[k] ? 'Var' : 'Yok'}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
