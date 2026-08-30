@@ -19,7 +19,8 @@
 .apps-dots>span:nth-child(7){background:#22c7a9}.apps-dots>span:nth-child(8){background:#ff4d5a}
 .apps-dots>span:nth-child(9){background:#f6c343}
 .apps-dropdown{position:absolute;top:calc(100% + 10px);left:0;min-width:560px;padding:14px;border-radius:16px;border:1px solid var(--stroke2);background:rgba(12,20,36,.98);box-shadow:0 18px 52px rgba(0,0,0,.55);backdrop-filter:saturate(1.2) blur(10px);opacity:0;transform:translateY(-8px);visibility:hidden;pointer-events:none;transition:opacity .14s ease,transform .14s ease,visibility .14s ease;z-index:60}
-.apps-menu:hover .apps-dropdown,.apps-dropdown.open{opacity:1;transform:translateY(0);visibility:visible;pointer-events:auto}
+.apps-dropdown.open{opacity:1 !important;transform:translateY(0);visibility:visible !important;pointer-events:auto !important}
+.apps-dropdown{opacity:0;visibility:hidden;pointer-events:none}
 .apps-dropdown::before{content:"";position:absolute;top:-7px;left:16px;width:12px;height:12px;background:rgba(12,20,36,.98);border-left:1px solid var(--stroke2);border-top:1px solid var(--stroke2);transform:rotate(45deg)}
 .apps-title{font-size:12px;letter-spacing:.8px;font-weight:700;opacity:.92}
 .apps-links{display:flex;gap:18px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(160,190,255,.12)}
@@ -226,3 +227,55 @@
 /* breadcrumb */
 .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:16px}
 .crumb a:hover{color:var(--text)}
+
+/* ============ v1.1 additions: banners, VIP, pricing ============ */
+
+/* Top side-by-side ad banners (above server list) */
+.top-banners{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);margin-bottom:18px}
+.top-banner{position:relative;display:block;border-radius:14px;overflow:hidden;border:1px solid var(--stroke2);box-shadow:0 14px 40px rgba(0,0,0,.45)}
+.top-banner img{width:100%;height:190px;object-fit:cover;display:block;transition:transform .3s ease}
+.top-banner:hover img{transform:scale(1.05)}
+.top-banner__tag{position:absolute;top:8px;left:8px;font-size:10px;letter-spacing:.6px;padding:3px 8px;border-radius:6px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18);color:#cfe0ff}
+@media (max-width:760px){.top-banners{grid-template-columns:1fr}}
+
+/* Side "page skin" vertical banner */
+.side-skin{position:relative;display:block;border-radius:16px;overflow:hidden;border:1px solid var(--stroke2);box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.side-skin img{width:100%;height:760px;object-fit:cover;display:block;transition:transform .4s ease}
+.side-skin:hover img{transform:scale(1.03)}
+.side-skin__tag{position:absolute;top:10px;left:10px;font-size:10px;letter-spacing:.6px;padding:3px 8px;border-radius:6px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18);color:#cfe0ff}
+.side-cta{display:block;text-align:center;margin-top:12px;padding:12px;border-radius:12px;border:1px dashed rgba(240,164,75,.4);color:#ffce52;font-weight:700;font-size:13px;transition:background .16s ease,transform .16s ease}
+.side-cta:hover{background:rgba(240,164,75,.08);transform:translateY(-1px)}
+
+/* VIP section top bar */
+.m2-top--vip{border-color:rgba(255,176,32,.35);background:linear-gradient(180deg,rgba(255,176,32,.10),rgba(0,0,0,.18))}
+.m2-top--vip::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,rgba(255,206,82,.9),rgba(255,140,42,.7),rgba(255,176,32,.55))}
+.m2-top__badge--vip{background:radial-gradient(circle at 30% 20%,rgba(255,206,82,.5),rgba(0,0,0,.35));border-color:rgba(255,206,82,.4);color:#ffce52}
+.m2-addBtn--vip{border-color:rgba(255,206,82,.5);background:linear-gradient(180deg,rgba(255,206,82,.28),rgba(0,0,0,.18));color:#fff}
+.m2-addBtn--vip:hover{border-color:rgba(255,206,82,.7);box-shadow:0 0 0 2px rgba(255,206,82,.22),0 16px 44px rgba(0,0,0,.45)}
+
+/* VIP server row (gold frame) */
+.srv-vip{border-color:rgba(255,206,82,.55);box-shadow:0 12px 34px rgba(0,0,0,.4),0 0 0 1px rgba(255,206,82,.25) inset,0 0 34px rgba(255,176,32,.12)}
+.srv-vip::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;z-index:2;background:linear-gradient(90deg,rgba(255,206,82,.95),rgba(255,140,42,.7),rgba(255,206,82,.55))}
+.srv-vip-badge{position:absolute;top:10px;right:10px;z-index:3;font-size:11px;font-weight:900;letter-spacing:.5px;padding:4px 10px;border-radius:999px;color:#3a1e00;background:linear-gradient(180deg,#ffce52,#ff8b2a);box-shadow:0 6px 16px rgba(0,0,0,.4)}
+
+/* Pricing page */
+.price-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.price-card{position:relative;display:flex;flex-direction:column;gap:12px;padding:22px 18px;border-radius:16px;border:1px solid var(--stroke2);background:linear-gradient(180deg,rgba(15,31,54,.8),rgba(11,18,32,.8));box-shadow:var(--shadow);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;overflow:hidden}
+.price-card:hover{transform:translateY(-3px);box-shadow:0 20px 46px rgba(0,0,0,.5)}
+.price-card.is-vip{border-color:rgba(255,206,82,.5);background:linear-gradient(180deg,rgba(50,38,10,.6),rgba(20,16,8,.7))}
+.price-card.is-vip:hover{border-color:rgba(255,206,82,.75)}
+.price-card.is-accent{border-color:rgba(224,8,16,.35)}
+.price-ribbon{position:absolute;top:14px;right:-30px;transform:rotate(38deg);background:linear-gradient(180deg,#ffce52,#ff8b2a);color:#3a1e00;font-size:10px;font-weight:900;letter-spacing:.6px;padding:4px 34px;box-shadow:0 6px 16px rgba(0,0,0,.4)}
+.price-ico{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:rgba(42,140,255,.12);border:1px solid var(--stroke2);color:var(--brand2)}
+.price-card.is-vip .price-ico{background:rgba(255,206,82,.14);border-color:rgba(255,206,82,.35);color:#ffce52}
+.price-name{font-size:16px;font-weight:800;line-height:1.3}
+.price-meta{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12.5px}
+.price-meta span{display:inline-flex;align-items:center;gap:5px}
+.price-amount{font-size:28px;font-weight:900;letter-spacing:.4px;background:linear-gradient(90deg,#e9f2ff,var(--brand));-webkit-background-clip:text;background-clip:text;color:transparent}
+.price-card.is-vip .price-amount{background:linear-gradient(90deg,#ffce52,#ff8b2a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.price-btn{margin-top:auto;background:#25D366 !important;border-color:#1ebe57 !important;color:#04231a !important}
+.price-btn:hover{background:#2ee06f !important}
+
+.hide-sm{display:inline}
+@media (max-width:920px){.hide-sm{display:none}}
+

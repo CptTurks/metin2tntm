@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Settings, Grip, UserCircle2, Rocket, LogOut, Shield } from 'lucide-react';
+import { Search, Settings, UserCircle2, Rocket, LogOut, Shield } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import AuthModal from './AuthModal';
 
@@ -11,8 +11,20 @@ export default function Header() {
   const [appsOpen, setAppsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [q, setQ] = useState('');
+  const appsRef = useRef(null);
+  const menuRef = useRef(null);
 
-  const submitSearch = (e) => { e.preventDefault(); navigate('/'); };
+  // Outside-click closes dropdowns (fixes: menu closing before you can click an item)
+  useEffect(() => {
+    const onDocClick = (e) => {
+      if (appsRef.current && !appsRef.current.contains(e.target)) setAppsOpen(false);
+      if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false);
+    };
+    document.addEventListener('mousedown', onDocClick);
+    return () => document.removeEventListener('mousedown', onDocClick);
+  }, []);
+
+  const submitSearch = (e) => { e.preventDefault(); navigate(`/ara?q=${encodeURIComponent(q)}`); };
 
   return (
     <header className="site-header">
@@ -25,15 +37,15 @@ export default function Header() {
             </span>
           </Link>
 
-          <div className="apps-menu" onMouseEnter={() => setAppsOpen(true)} onMouseLeave={() => setAppsOpen(false)}>
-            <button className="icon-btn" aria-label="Uygulamalar" onClick={() => setAppsOpen((o) => !o)}>
+          <div className="apps-menu" ref={appsRef}>
+            <button className="icon-btn" aria-label="Uygulamalar" onClick={() => { setAppsOpen((o) => !o); setMenuOpen(false); }}>
               <span className="apps-dots">{Array.from({ length: 9 }).map((_, i) => <span key={i} />)}</span>
             </button>
             <div className={`apps-dropdown ${appsOpen ? 'open' : ''}`} role="menu">
               <div className="apps-title">UYGULAMALARI</div>
               <div className="apps-links">
                 <a className="apps-link apps-link--blog" href="#gm" role="menuitem">✅ GM Kodları</a>
-                <a className="apps-link apps-link--analiz" href="#reklam" role="menuitem">✅ Reklam Fiyatları</a>
+                <button className="apps-link apps-link--analiz" role="menuitem" onClick={() => { setAppsOpen(false); navigate('/reklam-fiyatlari'); }}>✅ Reklam Fiyatları</button>
                 <a className="apps-link apps-link--forum" href="#blog" role="menuitem">✅ BLOG</a>
               </div>
             </div>
@@ -52,18 +64,19 @@ export default function Header() {
             </button>
           )}
 
-          <button className="pill" title="Ayarlar"><Settings size={16} /><span className="hide-sm">AYARLAR</span></button>
+          <button className="pill" onClick={() => navigate('/reklam-fiyatlari')} title="Reklam Fiyatları"><Settings size={16} /><span className="hide-sm">AYARLAR</span></button>
 
           {user ? (
-            <div className="apps-menu" onMouseEnter={() => setMenuOpen(true)} onMouseLeave={() => setMenuOpen(false)}>
-              <button className="pill pill-primary" onClick={() => setMenuOpen((o) => !o)}>
+            <div className="apps-menu" ref={menuRef}>
+              <button className="pill pill-primary" onClick={() => { setMenuOpen((o) => !o); setAppsOpen(false); }}>
                 <span className="pill-avatar">{user.username.charAt(0).toUpperCase()}</span>
                 <span>{user.username}</span>
               </button>
-              <div className={`apps-dropdown ${menuOpen ? 'open' : ''}`} style={{ minWidth: 200, left: 'auto', right: 0 }}>
+              <div className={`apps-dropdown ${menuOpen ? 'open' : ''}`} style={{ minWidth: 210, left: 'auto', right: 0 }}>
                 <div className="apps-title">HESAP</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 10 }}>
                   <button className="btn" onClick={() => { setMenuOpen(false); navigate('/profil'); }}><UserCircle2 size={16} /> Profilim</button>
+                  {user.isAdmin && <button className="btn" onClick={() => { setMenuOpen(false); navigate('/admin'); }}><Shield size={16} /> Admin Panel</button>}
                   <button className="btn btn-danger" onClick={() => { logout(); setMenuOpen(false); navigate('/'); }}><LogOut size={16} /> Çıkış Yap</button>
                 </div>
               </div>

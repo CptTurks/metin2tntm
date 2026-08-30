@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CATEGORIES, SITE_STATS } from '../mock/mock';
-import { Server, Users, ThumbsUp, Eye } from 'lucide-react';
+import { CATEGORIES, SITE_STATS, TOP_BANNERS } from '../mock/mock';
+import { Server, Users, ThumbsUp, Eye, Crown } from 'lucide-react';
 
 export function WelcomeHero() {
   const daysActive = 242;
@@ -48,6 +48,19 @@ export function ServerModes() {
           </a>
         ))}
       </div>
+    </section>
+  );
+}
+
+export function TopBanners() {
+  return (
+    <section className="top-banners" aria-label="Reklamlı serverler">
+      {TOP_BANNERS.map((b, i) => (
+        <a key={i} className="top-banner" href={b.url}>
+          <img src={b.img} alt={b.title} />
+          <span className="top-banner__tag">REKLAM</span>
+        </a>
+      ))}
     </section>
   );
 }

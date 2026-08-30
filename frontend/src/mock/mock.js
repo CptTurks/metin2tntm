@@ -74,7 +74,7 @@ export const SERVERS = [
     comments: [],
   },
   {
-    id: 308, name: 'DragonPvP', category: 'vip-server',
+    id: 308, name: 'DragonPvP', category: 'vip-server', vip: true,
     title: 'DragonPvP 1-120 VIP Server | Sınırsız Item | Anında Level | VIP Sisteminde Devrim | Hemen Katıl',
     startLevel: 1, endLevel: 120, likes: 8, banner: BANNERS[3],
     features: feat(true, true, true, true, true, true, true, true, true, false),
@@ -88,7 +88,7 @@ export const SERVERS = [
     ],
   },
   {
-    id: 307, name: 'PhoenixMT2', category: 'newschool-server',
+    id: 307, name: 'PhoenixMT2', category: 'newschool-server', vip: true,
     title: 'PhoenixMT2 1-105 NewSchool | Modern Arayüz | Yeni Skiller | Binek & Kostüm Sistemi | Açılışa Özel Bonuslar',
     startLevel: 1, endLevel: 105, likes: 6, banner: BANNERS[4],
     features: feat(true, true, true, true, true, true, true, true, true, false),
@@ -131,3 +131,34 @@ export const MOCK_USER = {
   avatar: null,
   isAdmin: true,
 };
+
+// WhatsApp iletişim numarası (reklam talepleri için)
+export const WA_NUMBER = '905452249305';
+
+// Sağ/Sol dikey "sayfa giydirme" (page skin) bannerları (portrait ~220x900)
+export const SIDE_BANNERS = {
+  left: 'https://images.unsplash.com/photo-1779274243035-9a53377374c2?crop=entropy&cs=srgb&fm=jpg&q=85&w=440',
+  right: 'https://images.unsplash.com/photo-1672673321304-07d3c58247a0?crop=entropy&cs=srgb&fm=jpg&q=85&w=440',
+};
+
+// Üstte yan yana 2 adet geniş reklam bannerı (reklamlı sunucular)
+export const TOP_BANNERS = [
+  { img: 'https://images.unsplash.com/photo-1600081728723-c8aa2ee3236a?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200', url: '#', title: 'HasMt2' },
+  { img: 'https://images.unsplash.com/photo-1514539079130-25950c84af65?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200', url: '#', title: 'Rumeli2' },
+];
+
+// Reklam fiyatları (orijinal reklam-fiyatlari sayfasından)
+export const AD_PRICES = [
+  { icon: 'crown', name: 'VIP Server Bölümü', size: 'Liste en üstünde', duration: '1 Ay', price: '500 TL', highlight: true },
+  { icon: 'rocket', name: 'Pop-UP Reklam Alanı', size: '800x450', duration: '1 Hafta', price: '2500 TL' },
+  { icon: 'rocket', name: 'Sidebar Kare Reklam Alanı', size: '203x250', duration: '1 Hafta', price: '1000 TL' },
+  { icon: 'rocket', name: 'Sağ Kayan Sabit Dikey Reklam', size: '220x911', duration: '1 Hafta', price: '2500 TL' },
+  { icon: 'rocket', name: 'Sol Kayan Sabit Dikey Reklam', size: '220x911', duration: '1 Hafta', price: '2500 TL' },
+  { icon: 'rocket', name: 'Site Üst Yatay Reklam Alanı', size: '1444x206', duration: '1 Hafta', price: '2500 TL' },
+  { icon: 'rocket', name: 'Orta Reklam Kare - 1', size: '329x274', duration: '1 Hafta', price: '1000 TL' },
+  { icon: 'rocket', name: 'Orta Reklam Kare - 2', size: '329x274', duration: '1 Hafta', price: '1000 TL' },
+  { icon: 'rocket', name: 'Orta Reklam Kare - 3', size: '329x274', duration: '1 Hafta', price: '1000 TL' },
+  { icon: 'rocket', name: 'Konu İçi Alt Geniş Reklam', size: '750x245', duration: '1 Hafta', price: '750 TL', accent: true },
+  { icon: 'rocket', name: 'Konu İçi Kare - 1', size: '329x274', duration: '1 Hafta', price: '750 TL', accent: true },
+  { icon: 'rocket', name: 'Konu İçi Kare - 2', size: '329x274', duration: '1 Hafta', price: '750 TL', accent: true },
+];

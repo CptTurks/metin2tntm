@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { AD_BANNERS } from '../mock/mock';
+import { SIDE_BANNERS } from '../mock/mock';
 
 export default function Footer() {
   return (
@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="footer-inner">
         <div className="footer-links">
           <a href="#gm">GM Kodları</a>
-          <a href="#reklam">Reklam Fiyatları</a>
+          <Link to="/reklam-fiyatlari">Reklam Fiyatları</Link>
           <a href="#blog">Blog</a>
         </div>
         <div className="footer-center">
@@ -29,22 +29,16 @@ export default function Footer() {
   );
 }
 
+// Tall vertical "page skin" (sayfa giydirme) side banner
 export function AdSlot({ side }) {
-  const img = side === 'left' ? AD_BANNERS[0] : AD_BANNERS[1];
+  const img = side === 'left' ? SIDE_BANNERS.left : SIDE_BANNERS.right;
   return (
     <aside className="ad-slot">
-      <div className="ad-card">
-        <div className="ad-label">Reklam</div>
-        <a href="#reklam"><img src={img} alt="Reklam alanı" /></a>
-      </div>
-      <div className="ad-card" style={{ marginTop: 14 }}>
-        <div className="ad-label">Sponsor</div>
-        <Link to="/sunucu-ekle">
-          <div style={{ padding: '24px 12px', textAlign: 'center', border: '1px dashed rgba(240,164,75,.4)', borderRadius: 12, color: '#ffce52', fontWeight: 700 }}>
-            🚀 Serverini burada tanıt!
-          </div>
-        </Link>
-      </div>
+      <a className="side-skin" href="#reklam" title="Reklam alanı">
+        <img src={img} alt="Sayfa giydirme reklam alanı" />
+        <span className="side-skin__tag">REKLAM</span>
+      </a>
+      <Link to="/reklam-fiyatlari" className="side-cta">🚀 Serverini burada tanıt!</Link>
     </aside>
   );
 }

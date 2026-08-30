@@ -10,6 +10,8 @@ import AddServer from './pages/AddServer';
 import Profile from './pages/Profile';
 import Admin from './pages/Admin';
 import CategoryPage from './pages/CategoryPage';
+import ReklamFiyatlari from './pages/ReklamFiyatlari';
+import SearchPage from './pages/SearchPage';
 import { Toaster } from './components/ui/sonner';
 
 function App() {
@@ -23,6 +25,8 @@ function App() {
             <Route path="/kategori/:slug" element={<CategoryPage />} />
             <Route path="/server/:id" element={<ServerDetail />} />
             <Route path="/sunucu-ekle" element={<AddServer />} />
+            <Route path="/reklam-fiyatlari" element={<ReklamFiyatlari />} />
+            <Route path="/ara" element={<SearchPage />} />
             <Route path="/profil" element={<Profile />} />
             <Route path="/admin" element={<Admin />} />
           </Routes>

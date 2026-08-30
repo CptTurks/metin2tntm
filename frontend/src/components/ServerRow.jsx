@@ -22,7 +22,8 @@ export default function ServerRow({ s }) {
   };
 
   return (
-    <article className="srv-row">
+    <article className={`srv-row ${s.vip ? 'srv-vip' : ''}`}>
+      {s.vip && <span className="srv-vip-badge">👑 VIP</span>}
       <div className="srv-left">
         <div className="srv-meta">
           <div className="srv-meta-line"><span className="srv-meta-key">⚔️ Başlangıç Seviyesi</span><span className="srv-meta-val">{s.startLevel}. Level</span></div>

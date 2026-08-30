@@ -1,20 +1,38 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Crown } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { WelcomeHero, ServerModes, StatsRow } from '../components/HomeSections';
+import { WelcomeHero, ServerModes, StatsRow, TopBanners } from '../components/HomeSections';
 import ServerRow from '../components/ServerRow';
 import { AD_BANNERS } from '../mock/mock';
 
 export default function Home() {
   const { servers } = useApp();
   const navigate = useNavigate();
-  const sorted = [...servers].sort((a, b) => b.id - a.id);
+  const vipServers = servers.filter((s) => s.vip).sort((a, b) => b.likes - a.likes);
+  const normalServers = servers.filter((s) => !s.vip).sort((a, b) => b.id - a.id);
 
   return (
     <>
       <WelcomeHero />
       <ServerModes />
+
+      {/* Üstte yan yana 2 reklam bannerı */}
+      <TopBanners />
+
+      {/* VIP / Öne Çıkan Serverler */}
+      {vipServers.length > 0 && (
+        <>
+          <div className="m2-top m2-top--vip">
+            <div className="m2-top__title">
+              <span className="m2-top__badge m2-top__badge--vip"><Crown size={18} /></span>
+              <div className="m2-top__main">👑 VIP Öne Çıkan Serverler</div>
+            </div>
+            <button className="m2-addBtn m2-addBtn--vip" onClick={() => navigate('/reklam-fiyatlari')}>VIP Ol</button>
+          </div>
+          {vipServers.map((s) => <ServerRow key={s.id} s={s} />)}
+        </>
+      )}
 
       <div className="m2-top">
         <div className="m2-top__title">
@@ -24,7 +42,7 @@ export default function Home() {
         <button className="m2-addBtn" onClick={() => navigate('/sunucu-ekle')}>🚀 Server Ekle</button>
       </div>
 
-      {sorted.map((s) => <ServerRow key={s.id} s={s} />)}
+      {normalServers.map((s) => <ServerRow key={s.id} s={s} />)}
 
       <StatsRow />
 
