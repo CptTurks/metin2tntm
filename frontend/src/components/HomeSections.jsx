@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CATEGORIES, SITE_STATS, TOP_BANNERS } from '../mock/mock';
+import { useApp } from '../context/AppContext';
 import { Server, Users, ThumbsUp, Eye, Crown } from 'lucide-react';
 
 export function WelcomeHero() {
@@ -53,11 +54,27 @@ export function ServerModes() {
 }
 
 export function TopBanners() {
+  const { banners, trackBannerClick, trackBannerImpression } = useApp();
+  const list = banners.filter((b) => b.active && b.position === 'ust');
+  useEffect(() => { list.forEach((b) => trackBannerImpression(b.id)); /* eslint-disable-next-line */ }, []);
+  if (list.length === 0) {
+    return (
+      <section className="top-banners" aria-label="Reklamlı serverler">
+        {TOP_BANNERS.map((b, i) => (
+          <a key={i} className="top-banner" href={b.url}>
+            <img src={b.img} alt={b.title} />
+            <span className="top-banner__tag">REKLAM</span>
+          </a>
+        ))}
+      </section>
+    );
+  }
   return (
     <section className="top-banners" aria-label="Reklamlı serverler">
-      {TOP_BANNERS.map((b, i) => (
-        <a key={i} className="top-banner" href={b.url}>
-          <img src={b.img} alt={b.title} />
+      {list.map((b) => (
+        <a key={b.id} className="top-banner" href={b.url || '#'} target="_blank" rel="noopener noreferrer"
+           data-testid={`top-banner-${b.id}`} onClick={() => trackBannerClick(b.id)}>
+          <img src={b.img} alt="reklam" />
           <span className="top-banner__tag">REKLAM</span>
         </a>
       ))}

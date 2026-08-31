@@ -130,3 +130,12 @@ Kategori kart görselleri `categories.image`, server kapakları `servers.banner`
 - **Düzeltilen (BUG - HIGH)**: Admin'de gizlenen yorumlar artık public server detay sayfasında da gizli (liste + sayaç + ortalama puan `!c.hidden` ile filtrelenir).
 - **Düzeltilen (UI)**: Mobilde (≤820px) header logo/arama çakışması — arama tam satıra taşındı.
 - Yeni CSS class'ları: `.site-announce`, `.srv-vip--green/--red`, `.srv-vip-badge--green/--red`, `.srv-right-top`, `.srv-stat(--online/--like)`, `.srv-sys-more/.srv-sys-extra`, `.switch`, `.vip-tag`, `.mini-sel/.mini-inp`, `.admin-banner-*`, `.tax-group/.tax-tag/.tax-add`, `.tax-pick-*`, `.info-*`.
+### v1.6 — Kart/VIP ince ayar + tri-state özellik + banner takibi
+- **Değişen**: Sunucu kartında VIP rozeti sadece **"👑 VIP"** yazar; kademe **sadece renkle** ayrışır (yeşil/kırmızı).
+- **Eklenen**: Özellikler (Genel + Sistem) **3 durumlu**: Var / Yok / **N/A**. `mock.featVal/isVar/isNA`. Değerler `'var'|'yok'|'na'`.
+  **N/A** seçilirse o özellik kartta ve detay sayfasında **hiç gösterilmez**; **Yok** ise ❌ olarak (eskisi gibi) görünür.
+- **Çıkarılan**: Sunucu Ekle "Genel Özellikler"deki **taksonomi seçim bloğu** kaldırıldı (seviye/kategori zaten Server Bilgileri'nde soruluyor). Admin "Özellik Yönetimi" sekmesi durmaya devam ediyor.
+- **Eklenen**: **Banner tıklama/gösterim takibi** — anasayfa üst + yan (sayfa giydirme) bannerları ve pop-up artık admin `banners`'tan gelir; görüntülenince gösterim, tıklanınca tıklama sayacı canlı artar (`trackBannerImpression/trackBannerClick`).
+- **Eklenen**: Admin Server Yönetimi'nde **VIP süre uyarısı** — bitişe ≤7g '⚠ Ng kaldı' (kırmızı), geçmiş '⛔ Süre doldu', ≤30g yeşil bilgi rozeti.
+- **Not**: dev StrictMode'da gösterim sayacı 2x artar (prod build'de olmaz); yan banner /admin görünümünde de sayılır (opsiyonel iyileştirme).
+- Testing agent: iteration_6 6/6 %100.

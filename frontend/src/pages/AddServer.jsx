@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ChevronRight, Rocket, Server, Settings2, Cpu, ArrowRight, ArrowLeft, Check } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { CATEGORIES, FEATURE_LABELS, SYSTEM_FEATURE_LABELS, DEFAULT_SYSTEM } from '../mock/mock';
+import { CATEGORIES, FEATURE_LABELS, SYSTEM_FEATURE_LABELS, DEFAULT_SYSTEM, featVal, isVar } from '../mock/mock';
 import InfoModal from '../components/InfoModal';
 import { toast } from 'sonner';
 
@@ -26,31 +26,29 @@ const TABS = [
 
 export default function AddServer() {
   const navigate = useNavigate();
-  const { addServer, taxonomy } = useApp();
+  const { addServer } = useApp();
   const [tab, setTab] = useState('bilgi');
   const [infoOk, setInfoOk] = useState(false);
   const [form, setForm] = useState({
     name: '', title: '', category: 'farm-server', startLevel: 1, endLevel: 105,
     banner: CATEGORIES[1].img, webUrl: '', discordUrl: '', description: '',
-    features: { lycan: true, simya: true, kusak: true, kemer: true, tilsim: true, pet: true, binek: true, kostum: true, beceri: true, efsunSabit: true },
-    system: { ...DEFAULT_SYSTEM },
+    features: Object.fromEntries([...Object.keys(FEATURE_LABELS), 'efsunSabit'].map((k) => [k, 'var'])),
+    system: Object.fromEntries(Object.keys(SYSTEM_FEATURE_LABELS).map((k) => [k, 'var'])),
     featuredSystem: [],
-    taxTags: [],
   });
 
   const upd = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
-  const updFeat = (k) => (e) => setForm((f) => ({ ...f, features: { ...f.features, [k]: e.target.value === '0' } }));
+  const updFeat = (k) => (e) => setForm((f) => ({ ...f, features: { ...f.features, [k]: e.target.value } }));
   const updSys = (k) => (e) => setForm((f) => {
-    const on = e.target.value === '0';
-    const featuredSystem = on ? f.featuredSystem : f.featuredSystem.filter((x) => x !== k);
-    return { ...f, system: { ...f.system, [k]: on }, featuredSystem };
+    const v = e.target.value;
+    const featuredSystem = v === 'var' ? f.featuredSystem : f.featuredSystem.filter((x) => x !== k);
+    return { ...f, system: { ...f.system, [k]: v }, featuredSystem };
   });
   const toggleFeatured = (k) => {
     const has = form.featuredSystem.includes(k);
     if (!has && form.featuredSystem.length >= 4) { toast.error('Kartta en fazla 4 rozet gösterilir.'); return; }
     setForm((f) => ({ ...f, featuredSystem: has ? f.featuredSystem.filter((x) => x !== k) : [...f.featuredSystem, k] }));
   };
-  const toggleTaxTag = (name) => setForm((f) => ({ ...f, taxTags: f.taxTags.includes(name) ? f.taxTags.filter((x) => x !== name) : [...f.taxTags, name] }));
 
   const submit = (e) => {
     e.preventDefault();
@@ -133,34 +131,22 @@ export default function AddServer() {
                 {YESNO.map((f) => (
                   <div key={f.key} className="field" style={{ marginBottom: 0 }}>
                     <label>{FEATURE_LABELS[f.key]}</label>
-                    <select className="sel" value={form.features[f.key] ? '0' : '1'} onChange={updFeat(f.key)}>
-                      <option value="0">{f.yes}</option>
-                      <option value="1">{f.no}</option>
+                    <select className="sel" data-testid={`feat-select-${f.key}`} value={featVal(form.features[f.key])} onChange={updFeat(f.key)}>
+                      <option value="var">{f.yes}</option>
+                      <option value="yok">{f.no}</option>
+                      <option value="na">➖ Belirtilmemiş (N/A)</option>
                     </select>
                   </div>
                 ))}
                 <div className="field" style={{ marginBottom: 0 }}>
                   <label>Efsun Oranları</label>
-                  <select className="sel" value={form.features.efsunSabit ? '0' : '1'} onChange={(e) => setForm((fm) => ({ ...fm, features: { ...fm.features, efsunSabit: e.target.value === '0' } }))}>
-                    <option value="0">✅ Efsun Oranları Sabit</option>
-                    <option value="1">❌ Efsun Oranları Değişken</option>
+                  <select className="sel" data-testid="feat-select-efsunSabit" value={featVal(form.features.efsunSabit)} onChange={updFeat('efsunSabit')}>
+                    <option value="var">✅ Efsun Oranları Sabit</option>
+                    <option value="yok">❌ Efsun Oranları Değişken</option>
+                    <option value="na">➖ Belirtilmemiş (N/A)</option>
                   </select>
                 </div>
               </div>
-              {taxonomy.length > 0 && (
-                <div style={{ marginTop: 18, paddingTop: 16, borderTop: '1px solid var(--stroke)' }} data-testid="tax-pick">
-                  {taxonomy.map((g) => (
-                    <div className="tax-pick-group" key={g.id}>
-                      <span className="tax-pick-group__name">{g.name}</span>
-                      <div className="tax-pick">
-                        {g.tags.map((t) => (
-                          <button type="button" key={t.id} className={`badge-pick ${form.taxTags.includes(t.name) ? 'on' : ''}`} onClick={() => toggleTaxTag(t.name)}>{t.name}</button>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
         )}
@@ -174,16 +160,17 @@ export default function AddServer() {
                 {Object.keys(SYSTEM_FEATURE_LABELS).map((k) => (
                   <div key={k} className="field" style={{ marginBottom: 0 }}>
                     <label>{SYSTEM_FEATURE_LABELS[k]} Var Mı ?</label>
-                    <select className="sel" data-testid={`sys-select-${k}`} value={form.system[k] ? '0' : '1'} onChange={updSys(k)}>
-                      <option value="0">✅ {SYSTEM_FEATURE_LABELS[k]} Var</option>
-                      <option value="1">❌ {SYSTEM_FEATURE_LABELS[k]} Yok</option>
+                    <select className="sel" data-testid={`sys-select-${k}`} value={featVal(form.system[k])} onChange={updSys(k)}>
+                      <option value="var">✅ {SYSTEM_FEATURE_LABELS[k]} Var</option>
+                      <option value="yok">❌ {SYSTEM_FEATURE_LABELS[k]} Yok</option>
+                      <option value="na">➖ Belirtilmemiş (N/A)</option>
                     </select>
                   </div>
                 ))}
                 <div className="badge-picker-wrap">
                   <label className="badge-picker-title">Kartta Öne Çıkacak Rozetler <span>(en fazla 4)</span></label>
                   <div className="badge-picker" data-testid="featured-badge-picker">
-                    {Object.keys(SYSTEM_FEATURE_LABELS).filter((k) => form.system[k]).map((k) => (
+                    {Object.keys(SYSTEM_FEATURE_LABELS).filter((k) => isVar(form.system[k])).map((k) => (
                       <button
                         type="button"
                         key={k}

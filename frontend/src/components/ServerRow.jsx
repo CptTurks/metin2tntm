@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Home as HomeIcon, MessageCircle, ThumbsUp, ArrowRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { CATEGORY_LABELS, SYSTEM_FEATURE_LABELS } from '../mock/mock';
+import { CATEGORY_LABELS, SYSTEM_FEATURE_LABELS, isVar, isNA } from '../mock/mock';
 import { toast } from 'sonner';
 
 export default function ServerRow({ s }) {
@@ -11,9 +11,9 @@ export default function ServerRow({ s }) {
   const [popOpen, setPopOpen] = useState(false);
   const f = s.features;
   const sys = s.system || {};
-  const enabledSys = Object.keys(SYSTEM_FEATURE_LABELS).filter((k) => sys[k]);
+  const enabledSys = Object.keys(SYSTEM_FEATURE_LABELS).filter((k) => isVar(sys[k]));
   const featuredSys = Array.isArray(s.featuredSystem) && s.featuredSystem.length
-    ? s.featuredSystem.filter((k) => sys[k])
+    ? s.featuredSystem.filter((k) => isVar(sys[k]))
     : enabledSys;
   const shownSys = featuredSys.slice(0, 4);
   const hiddenSys = enabledSys.filter((k) => !shownSys.includes(k));
@@ -21,7 +21,6 @@ export default function ServerRow({ s }) {
 
   const tier = s.vipTier && s.vipTier !== 'none' ? s.vipTier : null;
   const vipClass = tier ? `srv-vip srv-vip--${tier}` : '';
-  const vipLabel = tier === 'green' ? 'YEŞİL VIP' : 'KIRMIZI VIP';
 
   const doVote = (e) => {
     e.preventDefault();
@@ -36,14 +35,14 @@ export default function ServerRow({ s }) {
 
   return (
     <article className={`srv-row ${vipClass}`}>
-      {tier && <span className={`srv-vip-badge srv-vip-badge--${tier}`}>👑 {vipLabel}</span>}
+      {tier && <span className={`srv-vip-badge srv-vip-badge--${tier}`}>👑 VIP</span>}
       <div className="srv-left">
         <div className="srv-meta">
           <div className="srv-meta-line"><span className="srv-meta-key">⚔️ Başlangıç Seviyesi</span><span className="srv-meta-val">{s.startLevel}. Level</span></div>
           <div className="srv-meta-line"><span className="srv-meta-key">🛡️ Bitiş Seviyesi</span><span className="srv-meta-val">{s.endLevel}. Level</span></div>
-          <div className="srv-meta-line"><span className="srv-meta-val">{f.lycan ? '✅ Lycan Var' : '❌ Lycan Yok'}</span></div>
-          <div className="srv-meta-line"><span className="srv-meta-val">{f.efsunSabit ? '✅ Efsun Oranları Sabit' : '❌ Efsun Oranları Değişken'}</span></div>
-          <div className="srv-meta-line"><span className="srv-meta-val">{f.kostum ? '✅ Kostümler Var' : '❌ Kostümler Yok'}</span></div>
+          {!isNA(f.lycan) && <div className="srv-meta-line"><span className="srv-meta-val">{isVar(f.lycan) ? '✅ Lycan Var' : '❌ Lycan Yok'}</span></div>}
+          {!isNA(f.efsunSabit) && <div className="srv-meta-line"><span className="srv-meta-val">{isVar(f.efsunSabit) ? '✅ Efsun Oranları Sabit' : '❌ Efsun Oranları Değişken'}</span></div>}
+          {!isNA(f.kostum) && <div className="srv-meta-line"><span className="srv-meta-val">{isVar(f.kostum) ? '✅ Kostümler Var' : '❌ Kostümler Yok'}</span></div>}
           <div className="srv-badges">
             <a className="srv-badge srv-badge-cat" href={`#${s.category}`} onClick={(e) => { e.preventDefault(); navigate(`/kategori/${s.category}`); }}>🗂️ {CATEGORY_LABELS[s.category]}</a>
           </div>

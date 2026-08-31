@@ -1,24 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { POPUP_AD } from '../mock/mock';
+import { useApp } from '../context/AppContext';
 
 const SS_KEY = 'tm2_popup_seen';
 
 export default function PopupAd() {
   const [open, setOpen] = useState(false);
+  const { banners, trackBannerClick, trackBannerImpression } = useApp();
+  const banner = banners.find((b) => b.active && b.position === 'popup');
+  const ad = banner ? { img: banner.img, url: banner.url, title: POPUP_AD.title } : POPUP_AD;
 
   useEffect(() => {
     if (sessionStorage.getItem(SS_KEY)) return;
     const t = setTimeout(() => {
       sessionStorage.setItem(SS_KEY, '1');
+      if (banner) trackBannerImpression(banner.id);
       setOpen(true);
     }, 700);
     return () => clearTimeout(t);
+    /* eslint-disable-next-line */
   }, []);
 
   const close = () => {
     setOpen(false);
   };
+  const clickAd = () => { if (banner) trackBannerClick(banner.id); close(); };
 
   useEffect(() => {
     if (!open) return;
@@ -42,23 +49,23 @@ export default function PopupAd() {
           <X size={18} />
         </button>
         <a
-          href={POPUP_AD.url}
+          href={ad.url}
           target="_blank"
           rel="noopener noreferrer"
           data-testid="popup-ad-link"
-          onClick={close}
+          onClick={clickAd}
         >
-          <img src={POPUP_AD.img} alt={POPUP_AD.title} />
+          <img src={ad.img} alt={ad.title} />
         </a>
         <div className="popup-ad-cta">
-          <span className="popup-ad-title">{POPUP_AD.title}</span>
+          <span className="popup-ad-title">{ad.title}</span>
           <a
             className="popup-ad-btn"
-            href={POPUP_AD.url}
+            href={ad.url}
             target="_blank"
             rel="noopener noreferrer"
             data-testid="popup-ad-cta-btn"
-            onClick={close}
+            onClick={clickAd}
           >
             Hemen Katıl
           </a>

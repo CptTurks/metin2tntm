@@ -119,6 +119,11 @@ export const FEATURE_LABELS = {
   pet: 'Levelli Pet', binek: 'Binek Sistemi', kostum: 'Kostümler', beceri: 'Yeni Beceriler',
 };
 
+// Özellik 3'lü durum: 'var' | 'yok' | 'na'. (eski boolean: true->var, false->yok)
+export const featVal = (v) => (v === true || v === 'var' ? 'var' : v === 'na' ? 'na' : 'yok');
+export const isVar = (v) => v === true || v === 'var';
+export const isNA = (v) => v === 'na';
+
 // Sistem Özellikleri (Sunucu Ekle - 3. sekme)
 export const SYSTEM_FEATURE_LABELS = {
   kEnvanter: '(K) Envanter',

@@ -1,0 +1,34 @@
+{
+  "summary": "Frontend-only regression of 6 follow-up items on the Metin2 promo site (localStorage mock, no backend). All 6 items PASS: (1) featured card VIP badge text is exactly '👑 VIP' with red (DragonPvP) / green (PhoenixMT2) classes; (2) AddServer tab2 feature selects and tab3 sys-select-* + Efsun select are tri-state (Var / Yok / ➖ Belirtilmemiş (N/A)) and N/A selection works; (3) created server 'TriState' (#312) with Lycan+Kostüm N/A and Boss Takip N/A — those features are absent from both server detail chips and Home card, while 'Yok' items still render as ❌ (Simya, Çevrimdışı Pazar); (4) no taxonomy pick block (tax-pick) in Genel Özellikler; (5) admin banner impression counters increased after viewing Home (ust 2102→2104, sol 1504→1508) and click counters incremented after clicking top and side banners (88→89, 40→41); (6) admin VIP warning badge works: +4d '⚠ 5g kaldı' (red), past '⛔ Süre doldu' (red), +14d '15g kaldı' (green), +60d no badge, tier=none no badge.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Banner impression tracking", "issue": "Impressions increment by 2 per page view (React StrictMode double-invokes the useEffect in TopBanners/AdSlot), so counters inflate at 2x. Also AdSlot mounts on every route (incl. /admin), so 'sol'/'sag' impressions count admin page views too. Functional but stats are inflated.", "affected_selectors": ["top-banner-2", "side-banner-3"]},
+      {"flow": "Right side banner", "issue": "Seed banner id=4 (position 'sag') has active:false, so the right page-skin falls back to the static image with no data-testid and no tracking. After toggling admin-banner-toggle-4 on, side-banner-4 renders and tracks correctly. Confirm this default is intentional.", "affected_selectors": ["side-banner-4"]},
+      {"flow": "Pop-up banner impression", "issue": "POP-UP banner (id=1) impressions do not increment when popup was already seen in the session (by design, noted for completeness).", "affected_selectors": ["popup-ad-backdrop"]}
+    ],
+    "design_issues": [
+      {"screen": "Admin → Server Yönetimi (VIP bitiş tarihi)", "issues": ["Uses native browser <input type=\"date\"> picker instead of the shadcn calendar component"]},
+      {"screen": "AddServer", "issues": ["React dev console warning: '<span> cannot be a child of <option>' hydration warning caused by the visual-editor instrumentation wrapping option text (dev-only, non-blocking)"]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Optional: de-duplicate banner impression tracking (use a ref guard) so StrictMode/dev double-mount doesn't double-count; consider only counting side-banner impressions on public pages, not /admin.",
+    "Optional: decide whether seed banner id=4 ('sag') should be active by default so the right page-skin is tracked out of the box.",
+    "Optional: replace the native date input in Admin VIP cell with the shadcn calendar for consistency."
+  ],
+  "critical_code_review_comments": [
+    "AddServer tab2 feature selects had no data-testid; I added data-testid=\"feat-select-<key>\" (and feat-select-efsunSabit) for parity with sys-select-<key>. Keep these for future automation.",
+    "Pre-existing lint error in AddServer.jsx:119 (unescaped apostrophe in the banner hint text) — react/no-unescaped-entities."
+  ],
+  "updated_files": ["/app/frontend/src/pages/AddServer.jsx"],
+  "success_rate": {"backend": "N/A (skipped per request)", "frontend": "100% (6/6 requested items pass)"},
+  "seed_data_creation": "Created server 'TriState' (#312, Tri 1-99) in localStorage during the test run; toggled banner id=4 active. Both are per-run browser-local state, nothing persistent.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "mert / 123456 (admin)",
+  "context_for_next_testing_agent": "All 6 iteration-6 items verified via Playwright on the public preview URL. Popup ad blocks clicks on first load — press Escape before interacting. Feature selects in AddServer tab2 now expose data-testid=feat-select-<key>. System keys: kEnvanter, bossTakip, guvenliPc, loncaAjan, ticaretCami, yardimciSaman, cevrimdisiPazar, itemKilitleme.",
+  "rca_of_the_issue": "Banner impression double-count RCA: TopBanners (HomeSections.jsx:59) and AdSlot (Footer.jsx:39) call trackBannerImpression inside an empty-dep useEffect; React 18 StrictMode double-invokes effects in dev, and AdSlot is mounted by Layout on every route, so each navigation adds 2 impressions per side banner."
+}

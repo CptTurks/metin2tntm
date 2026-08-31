@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ChevronRight, Home as HomeIcon, MessageCircle, ThumbsUp, Star, ListChecks, MessagesSquare, Cpu } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { CATEGORY_LABELS, FEATURE_LABELS, SYSTEM_FEATURE_LABELS, DEFAULT_SYSTEM } from '../mock/mock';
+import { CATEGORY_LABELS, FEATURE_LABELS, SYSTEM_FEATURE_LABELS, DEFAULT_SYSTEM, isVar, isNA } from '../mock/mock';
 import AuthModal from '../components/AuthModal';
 import { toast } from 'sonner';
 
@@ -61,12 +61,12 @@ export default function ServerDetail() {
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
               <span className="feature-chip yes">⚔️ Başlangıç: {s.startLevel}. Level</span>
               <span className="feature-chip yes">🛡️ Bitiş: {s.endLevel}. Level</span>
-              <span className={`feature-chip ${s.features.efsunSabit ? 'yes' : 'no'}`}>{s.features.efsunSabit ? '✅' : '❌'} Efsun Oranları {s.features.efsunSabit ? 'Sabit' : 'Değişken'}</span>
+              {!isNA(s.features.efsunSabit) && <span className={`feature-chip ${isVar(s.features.efsunSabit) ? 'yes' : 'no'}`}>{isVar(s.features.efsunSabit) ? '✅' : '❌'} Efsun Oranları {isVar(s.features.efsunSabit) ? 'Sabit' : 'Değişken'}</span>}
             </div>
             <div className="feature-grid">
-              {featureKeys.map((k) => (
-                <div key={k} className={`feature-chip ${s.features[k] ? 'yes' : 'no'}`}>
-                  {s.features[k] ? '✅' : '❌'} {FEATURE_LABELS[k]} {s.features[k] ? 'Var' : 'Yok'}
+              {featureKeys.filter((k) => !isNA(s.features[k])).map((k) => (
+                <div key={k} className={`feature-chip ${isVar(s.features[k]) ? 'yes' : 'no'}`}>
+                  {isVar(s.features[k]) ? '✅' : '❌'} {FEATURE_LABELS[k]} {isVar(s.features[k]) ? 'Var' : 'Yok'}
                 </div>
               ))}
             </div>
@@ -78,9 +78,9 @@ export default function ServerDetail() {
           <div className="card-head"><Cpu size={18} /> Sistem Özellikleri</div>
           <div className="card-body">
             <div className="feature-grid">
-              {sysKeys.map((k) => (
-                <div key={k} className={`feature-chip ${sys[k] ? 'yes' : 'no'}`}>
-                  {sys[k] ? '✅' : '❌'} {SYSTEM_FEATURE_LABELS[k]} {sys[k] ? 'Var' : 'Yok'}
+              {sysKeys.filter((k) => !isNA(sys[k])).map((k) => (
+                <div key={k} className={`feature-chip ${isVar(sys[k]) ? 'yes' : 'no'}`}>
+                  {isVar(sys[k]) ? '✅' : '❌'} {SYSTEM_FEATURE_LABELS[k]} {isVar(sys[k]) ? 'Var' : 'Yok'}
                 </div>
               ))}
             </div>

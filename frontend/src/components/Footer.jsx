@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { SIDE_BANNERS } from '../mock/mock';
+import { useApp } from '../context/AppContext';
 
 export default function Footer() {
   return (
@@ -31,10 +32,22 @@ export default function Footer() {
 
 // Tall vertical "page skin" (sayfa giydirme) side banner
 export function AdSlot({ side }) {
-  const img = side === 'left' ? SIDE_BANNERS.left : SIDE_BANNERS.right;
+  const { banners, trackBannerClick, trackBannerImpression } = useApp();
+  const pos = side === 'left' ? 'sol' : 'sag';
+  const b = banners.find((x) => x.active && x.position === pos);
+  const img = b ? b.img : (side === 'left' ? SIDE_BANNERS.left : SIDE_BANNERS.right);
+  React.useEffect(() => { if (b) trackBannerImpression(b.id); /* eslint-disable-next-line */ }, []);
   return (
     <aside className="ad-slot">
-      <a className="side-skin" href="#reklam" title="Reklam alanı">
+      <a
+        className="side-skin"
+        href={b?.url || '#reklam'}
+        target={b ? '_blank' : undefined}
+        rel="noopener noreferrer"
+        title="Reklam alanı"
+        data-testid={b ? `side-banner-${b.id}` : undefined}
+        onClick={() => { if (b) trackBannerClick(b.id); }}
+      >
         <img src={img} alt="Sayfa giydirme reklam alanı" />
         <span className="side-skin__tag">REKLAM</span>
       </a>

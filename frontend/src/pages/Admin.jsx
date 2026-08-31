@@ -14,6 +14,8 @@ function Switch({ checked, onChange, testid }) {
   );
 }
 
+const daysLeft = (d) => { if (!d) return null; const ms = new Date(d + 'T23:59:59') - new Date(); return Math.ceil(ms / 86400000); };
+
 export default function Admin() {
   const {
     user, servers, users, banners, announcement, taxonomy,
@@ -107,6 +109,14 @@ export default function Admin() {
                       {s.vipTier !== 'none' && (
                         <input type="date" className="mini-inp" value={s.vipUntil || ''} data-testid={`admin-vip-until-${s.id}`} onChange={(e) => setServerVip(s.id, s.vipTier, e.target.value)} />
                       )}
+                      {s.vipTier !== 'none' && s.vipUntil && (() => {
+                        const dl = daysLeft(s.vipUntil);
+                        if (dl === null) return null;
+                        if (dl < 0) return <span className="vip-tag vip-tag--red" data-testid={`admin-vip-warn-${s.id}`}>⛔ Süre doldu</span>;
+                        if (dl <= 7) return <span className="vip-tag vip-tag--red" data-testid={`admin-vip-warn-${s.id}`}>⚠ {dl}g kaldı</span>;
+                        if (dl <= 30) return <span className="vip-tag vip-tag--green" data-testid={`admin-vip-warn-${s.id}`}>{dl}g kaldı</span>;
+                        return null;
+                      })()}
                     </div>
                   </td>
                   <td><Switch checked={s.featured} onChange={() => toggleServerFeatured(s.id)} testid={`admin-featured-toggle-${s.id}`} /></td>

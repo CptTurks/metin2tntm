@@ -44,6 +44,10 @@ stack'ine port edecek. React app sadece UI/UX blueprint'idir.
 - Fix: gizli yorumlar detay sayfasından da gizlendi; mobil header çakışması.
 - Testing agent: iteration_4 (%93→fix), iteration_5 (3/3 %100).
 - Yeni state: `banners`, `announcement`, `taxonomy`; server alanları: `hidden, vipTier, vipUntil, featured, online, featuredSystem, taxTags`.
+### Bu oturum — v1.6 (kart/VIP ince ayar + tri-state)
+- VIP rozeti sadece "👑 VIP" (renk yeşil/kırmızı). Özellikler 3 durumlu (Var/Yok/**N/A**; N/A hiç gösterilmez).
+- Sunucu Ekle Genel Özellikler'den taksonomi bloğu kaldırıldı. Banner gösterim/tıklama canlı takibi (anasayfa+popup). Admin VIP süre uyarısı.
+- Testing agent iteration_6: 6/6 %100. Özellik değerleri artık `'var'|'yok'|'na'` (helper: `featVal/isVar/isNA`).
 
 ## Backlog (kalan tanıtım görevleri)
 - P2: **GM Kodları Sayfası** — aranabilir GM komutları listesi.

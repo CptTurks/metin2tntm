@@ -111,6 +111,8 @@ export function AppProvider({ children }) {
   const updateBanner = (id, patch) => setBanners((prev) => prev.map((b) => (b.id === id ? { ...b, ...patch } : b)));
   const deleteBanner = (id) => setBanners((prev) => prev.filter((b) => b.id !== id));
   const toggleBanner = (id) => setBanners((prev) => prev.map((b) => (b.id === id ? { ...b, active: !b.active } : b)));
+  const trackBannerClick = (id) => setBanners((prev) => prev.map((b) => (b.id === id ? { ...b, clicks: b.clicks + 1 } : b)));
+  const trackBannerImpression = (id) => setBanners((prev) => prev.map((b) => (b.id === id ? { ...b, impressions: b.impressions + 1 } : b)));
 
   // ---- Duyuru ----
   const setAnnouncement = (patch) => setAnnouncementState((prev) => ({ ...prev, ...patch }));
@@ -151,7 +153,7 @@ export function AppProvider({ children }) {
     voteServer, trackClick, addComment, addServer, deleteServer, login, register, logout,
     toggleServerHidden, setServerVip, toggleServerFeatured, updateServerFeaturedSystem,
     deleteComment, toggleCommentHidden,
-    addBanner, updateBanner, deleteBanner, toggleBanner,
+    addBanner, updateBanner, deleteBanner, toggleBanner, trackBannerClick, trackBannerImpression,
     setAnnouncement,
     addTaxGroup, deleteTaxGroup, addTaxTag, deleteTaxTag,
     updateUserRole, resetUserPassword,
