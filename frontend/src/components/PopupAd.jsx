@@ -20,11 +20,23 @@ export default function PopupAd() {
     setOpen(false);
   };
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => { if (e.key === 'Escape') close(); };
+    document.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open]);
+
   if (!open) return null;
 
   return (
     <div className="popup-ad-back" data-testid="popup-ad-backdrop" onClick={close}>
-      <div className="popup-ad-box" data-testid="popup-ad-box" onClick={(e) => e.stopPropagation()}>
+      <div className="popup-ad-box" data-testid="popup-ad-box" role="dialog" aria-modal="true" aria-label="Reklam" onClick={(e) => e.stopPropagation()}>
         <span className="popup-ad-tag">REKLAM · 800x450</span>
         <button className="popup-ad-close" data-testid="popup-ad-close" onClick={close} aria-label="Kapat">
           <X size={18} />

@@ -27,7 +27,7 @@ export default function SearchPage() {
       <div className="m2-top">
         <div className="m2-top__title">
           <span className="m2-top__badge"><SearchIcon size={18} /></span>
-          <div className="m2-top__main">“{q}” için {results.length} sonuç</div>
+          <div className="m2-top__main">“{q}” için {results.length} sonuç bulundu</div>
         </div>
         <button className="m2-addBtn" onClick={() => navigate('/')}>Anasayfa</button>
       </div>

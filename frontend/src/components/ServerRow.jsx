@@ -11,8 +11,11 @@ export default function ServerRow({ s }) {
   const f = s.features;
   const sys = s.system || {};
   const enabledSys = Object.keys(SYSTEM_FEATURE_LABELS).filter((k) => sys[k]);
-  const shownSys = enabledSys.slice(0, 4);
-  const extraSys = enabledSys.length - shownSys.length;
+  const featuredSys = Array.isArray(s.featuredSystem) && s.featuredSystem.length
+    ? s.featuredSystem.filter((k) => sys[k])
+    : enabledSys;
+  const shownSys = featuredSys.slice(0, 4);
+  const extraSys = featuredSys.length - shownSys.length;
 
   const doVote = (e) => {
     e.preventDefault();

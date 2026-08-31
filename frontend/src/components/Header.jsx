@@ -54,8 +54,8 @@ export default function Header() {
 
         <nav className="header-actions">
           <form className="header-search" onSubmit={submitSearch}>
-            <input value={q} onChange={(e) => setQ(e.target.value)} type="search" placeholder="Ne aramak istiyorsun..." />
-            <button className="s-btn" type="submit" aria-label="Ara"><Search size={17} /></button>
+            <input data-testid="header-search-input" value={q} onChange={(e) => setQ(e.target.value)} type="search" placeholder="Ne aramak istiyorsun..." />
+            <button className="s-btn" data-testid="header-search-submit" type="submit" aria-label="Ara"><Search size={17} /></button>
           </form>
 
           {user?.isAdmin && (
@@ -82,7 +82,7 @@ export default function Header() {
               </div>
             </div>
           ) : (
-            <button className="pill pill-primary" onClick={() => setAuthOpen(true)}>
+            <button className="pill pill-primary" data-testid="auth-open-btn" onClick={() => setAuthOpen(true)}>
               <UserCircle2 size={16} /> Giriş / Kayıt
             </button>
           )}

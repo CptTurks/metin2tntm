@@ -31,7 +31,10 @@ stack'ine port edecek. React app sadece UI/UX blueprint'idir.
 - **Sıralama Filtresi** (`components/SortBar.jsx` + `sortServers` helper): Beğeni/Tarih/Tıklanma. Home (varsayılan Tarih), Category & Search (varsayılan Beğeni). VIP bölümü etkilenmez.
 - **Sistem Rozetleri** (`ServerRow.jsx`): sunucu kartında açık sistem özelliklerinden ilk 4 + `+N`.
 - **UI**: Giriş/Kayıt modalı dikeyde aşağı alındı (`.modal-box margin-top:6vh`).
-- Testing agent ile %100 frontend doğrulaması yapıldı (iteration_1.json).
+- **Popup Cilası**: Escape ile kapatma + arka plan scroll kilidi + `role=dialog`.
+- **Öne Çıkan Rozet Seçimi**: Sunucu Ekle → Sistem Özellikleri sekmesinde sahibi kartta görünecek rozetleri seçer (max 4, `server.featuredSystem`).
+- **Bugfix**: 3-sekmeli formda "Devam" butonunun erken submit hatası + StrictMode çift toast düzeltildi.
+- Testing agent ile doğrulandı (iteration_1/2/3.json — hepsi %100).
 
 ## Backlog (kalan tanıtım görevleri)
 - P2: **GM Kodları Sayfası** — aranabilir GM komutları listesi.

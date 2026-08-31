@@ -293,6 +293,15 @@
 .srv-sys-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;font-size:10.5px;font-weight:700;letter-spacing:.2px;color:#bfe6dd;background:rgba(34,199,169,.10);border:1px solid rgba(34,199,169,.22)}
 .srv-sys-badge--more{color:var(--muted);background:rgba(255,255,255,.05);border-color:var(--stroke)}
 
+/* ---------- Sunucu Ekle: kartta öne çıkacak rozet seçici ---------- */
+.badge-picker-wrap{grid-column:1/-1;margin-top:6px;padding-top:16px;border-top:1px solid var(--stroke)}
+.badge-picker-title{display:block;font-size:13px;font-weight:700;margin-bottom:10px;color:#cfe0ff}
+.badge-picker-title span{color:var(--muted);font-weight:600;font-size:12px}
+.badge-picker{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.badge-pick{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;font-size:12.5px;font-weight:700;cursor:pointer;color:var(--muted);background:rgba(19,39,71,.4);border:1px solid var(--stroke);transition:transform .12s ease,color .12s ease,background .12s ease,border-color .12s ease}
+.badge-pick:hover{transform:translateY(-1px);color:var(--text);border-color:var(--stroke2)}
+.badge-pick.on{color:#3a1e00;background:linear-gradient(180deg,#ffce52,#ff8b2a);border-color:rgba(255,206,82,.6)}
+
 /* ---------- Girişte açılan Pop-Up reklam (800x450) ---------- */
 .popup-ad-back{position:fixed;inset:0;z-index:300;background:rgba(3,7,15,.82);backdrop-filter:blur(6px);display:grid;place-items:center;padding:18px;animation:fadeIn .18s ease}
 .popup-ad-box{position:relative;width:min(800px,100%);border-radius:16px;overflow:hidden;border:1px solid rgba(255,206,82,.4);box-shadow:0 30px 80px rgba(0,0,0,.7);background:#0b1220;animation:popIn .2s ease}

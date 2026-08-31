@@ -1,0 +1,24 @@
+{
+  "summary": "Frontend-only RETEST of iteration_2 fixes on https://metin2-promote.preview.emergentagent.com. Verified: (1) AddServer step navigation — 'Devam' on tab 1 and tab 2 no longer submits/publishes (no 'Serveriniz eklendi!' toast, no redirect; landed on tab 3 with badge picker visible). CRITICAL bug is FIXED. (2) Featured badge picker toggle works (★/☆ + 'on' class); selecting a 5th badge fired the toast 'Kartta en fazla 4 rozet gösterilir.' EXACTLY ONCE (toast count = 1) and the 5th badge was NOT selected — duplicate-toast LOW bug is FIXED. (3) Setting sys-select-loncaAjan to '1' (Yok) removed featured-pick-loncaAjan from the picker and deselected it. (4) Published with exactly 3 badges -> redirect to /server/312; on Home, server-sys-badges-312 shows ONLY the 3 selected features (Boss Takip Sistemi, Güvenli PC Girişi, Ticaret Camı) plus a '+4' overflow chip. (5) Seed server Elora2 fallback (server-sys-badges-311) shows 4 default enabled badges + '+3' overflow. No backend testing performed (frontend-only, localStorage mock).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home / ServerRow sys badges", "issues": ["When a user explicitly picks fewer than 4 featured badges (e.g. 3), the card still shows a '+4' overflow chip computed from ALL enabled systems (extraSys = enabledSys.length - shownSys.length). Cosmetically inconsistent with the 'these are my chosen highlights' intent — consider computing overflow as enabledSys.length - featuredSys.length only in fallback mode, or label it as remaining systems."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": ["Optional/low: reconsider overflow ('+N') counting on ServerRow when featuredSystem is explicitly set."],
+  "critical_code_review_comments": [
+    "AddServer.jsx still wraps steps in a <form onSubmit={submit}> while both nav buttons are type='button'. Works now, but pressing Enter in a text input on tab 1 can still trigger form submit/publish from step 1 — consider guarding submit by requiring tab === 'sistem' or removing the onSubmit handler.",
+    "React hydration warning in console: <span> rendered as child of <option> (AddServer.jsx line 102 option list) — caused by the visual-editor instrumentation wrapper; harmless in preview but noisy."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "not tested (frontend-only)", "frontend": "100% (4/4 retest scenarios passed)"},
+  "seed_data_creation": "Created one localStorage server via UI: name 'TestNav', title 'Test 1-99', id 312, featuredSystem [bossTakip, guvenliPc, ticaretCami], loncaAjan disabled.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Both iteration_2 bugs (Devam auto-submit, duplicate max-4 toast) are confirmed fixed. Test server id 312 exists in localStorage from this run; clear localStorage if it interferes. Remaining untested areas: server detail page, voting/like persistence, category filtering, search, blog, popup ad, settings/theme, mobile responsiveness.",
+  "rca_of_the_issue": "N/A — previous root cause (React reusing the same button DOM node while type mutated button->submit) is resolved by distinct key props + type='button' with onClick={submit}; toast duplication resolved by moving toast.error out of the setForm updater (no longer re-run under StrictMode double-invoke)."
+}

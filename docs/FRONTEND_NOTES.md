@@ -90,3 +90,26 @@ Kategori kart görselleri `categories.image`, server kapakları `servers.banner`
 - **Değişen**: Pop-Up artık **ilk gösterimde** `tm2_popup_seen` yazar (kapatmadan yenilense de tekrar açılmaz).
 - **Değişen**: `sortServers` — `likes`/`clicks` için deterministik eşitlik bozucu (`b.id - a.id`) eklendi.
 - **Değişen (UI)**: Giriş/Kayıt modalı (`.modal-box`) dikeyde biraz aşağı alındı (`margin-top:6vh`) — çok yukarıda kalıyordu.
+### v1.4
+- **Eklenen (UX)**: Pop-Up modalı **Escape** ile kapanır + açıkken arka plan **kaydırma kilidi** (`body overflow:hidden`);
+  `role="dialog" aria-modal="true"` eklendi.
+- **Eklenen**: **Öne Çıkan Rozet Seçimi** — Sunucu Ekle → Sistem Özellikleri sekmesinde, sunucu sahibi kartta
+  görünecek rozetleri seçer (en fazla 4). Yeni alan: `server.featuredSystem` (key dizisi). Bir sistem özelliği
+  "Yok" yapılırsa öne çıkanlardan otomatik çıkar. `ServerRow` `featuredSystem` varsa onu, yoksa ilk 4 açık
+  özelliği gösterir. Seçici CSS: `.badge-picker-wrap/.badge-picker-title/.badge-picker/.badge-pick(.on)`.
+  PHP tarafında: `servers.featured_system` (JSON/CSV) ya da ayrı `server_featured_badges` tablosu olarak modellenebilir (öneri, bağlayıcı değil).
+- **Değişen**: Arama başlığı "'q' için N sonuç **bulundu**" olarak güncellendi.
+- **Eklenen (test)**: `data-testid` — `header-search-input/-submit`, `auth-open-btn`, `featured-badge-picker`, `featured-pick-<key>`.
+
+> Not: Arama sonuçları sayfası (`/ara?q=`) ve Kategori sayfası (`/kategori/{slug}`) zaten mevcut ve tasarım
+> diline (`.srv-row`, `.m2-top`, `.card`) sadık; header araması ve anasayfa mod kartları bu sayfalara yönlendirir.
+### v1.4.1 (bugfix)
+- **Düzeltilen (BUG - KRİTİK)**: Sunucu Ekle'de tab 2'de **"Devam"** butonu formu erken gönderiyordu
+  (React aynı buton DOM node'unu kullanıp `type`'ı button→submit değiştiriyordu). Fix: iki nav butonu ayrı
+  `key` aldı ve "Serveri Yayınla" `type="button" onClick={submit}` yapıldı. Ayrıca `submit` yalnızca
+  `tab === 'sistem'` iken çalışır (Enter ile erken gönderim engellendi).
+- **Düzeltilen (BUG)**: "en fazla 4 rozet" toast'u StrictMode'da iki kez tetikleniyordu → `toast` state
+  updater'ından çıkarıldı.
+- **Değişen**: `ServerRow` "+N" sayacı artık `featuredSystem` üzerinden hesaplanır (sahibi 3 rozet seçtiyse
+  yanıltıcı fazladan sayaç çıkmaz).
+- **Eklenen (test)**: `addserver-name`, `addserver-title`, `addserver-next-btn`, `addserver-publish-btn`, `sys-select-<key>`.

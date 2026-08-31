@@ -32,14 +32,25 @@ export default function AddServer() {
     banner: CATEGORIES[1].img, webUrl: '', discordUrl: '', description: '',
     features: { lycan: true, simya: true, kusak: true, kemer: true, tilsim: true, pet: true, binek: true, kostum: true, beceri: true, efsunSabit: true },
     system: { ...DEFAULT_SYSTEM },
+    featuredSystem: [],
   });
 
   const upd = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const updFeat = (k) => (e) => setForm((f) => ({ ...f, features: { ...f.features, [k]: e.target.value === '0' } }));
-  const updSys = (k) => (e) => setForm((f) => ({ ...f, system: { ...f.system, [k]: e.target.value === '0' } }));
+  const updSys = (k) => (e) => setForm((f) => {
+    const on = e.target.value === '0';
+    const featuredSystem = on ? f.featuredSystem : f.featuredSystem.filter((x) => x !== k);
+    return { ...f, system: { ...f.system, [k]: on }, featuredSystem };
+  });
+  const toggleFeatured = (k) => {
+    const has = form.featuredSystem.includes(k);
+    if (!has && form.featuredSystem.length >= 4) { toast.error('Kartta en fazla 4 rozet gösterilir.'); return; }
+    setForm((f) => ({ ...f, featuredSystem: has ? f.featuredSystem.filter((x) => x !== k) : [...f.featuredSystem, k] }));
+  };
 
   const submit = (e) => {
     e.preventDefault();
+    if (tab !== 'sistem') return;
     if (!form.name.trim() || !form.title.trim()) { toast.error('Server adı ve başlık zorunludur.'); setTab('bilgi'); return; }
     const id = addServer({ ...form, startLevel: Number(form.startLevel), endLevel: Number(form.endLevel) });
     toast.success('Serveriniz eklendi! Yönlendiriliyorsunuz...');
@@ -78,14 +89,14 @@ export default function AddServer() {
             <div className="card-head"><Server size={18} /> Server Bilgileri</div>
             <div className="card-body">
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                <div className="field"><label>Server Adınız *</label><input className="inp" value={form.name} onChange={upd('name')} placeholder="Örn: DragonPvP" /></div>
+                <div className="field"><label>Server Adınız *</label><input className="inp" data-testid="addserver-name" value={form.name} onChange={upd('name')} placeholder="Örn: DragonPvP" /></div>
                 <div className="field"><label>Kategori *</label>
                   <select className="sel" value={form.category} onChange={upd('category')}>
                     {CATEGORIES.map((c) => <option key={c.slug} value={c.slug}>{c.label}</option>)}
                   </select>
                 </div>
               </div>
-              <div className="field"><label>Konu Başlığı *</label><input className="inp" value={form.title} onChange={upd('title')} placeholder="Konu Başlığı Giriniz" /></div>
+              <div className="field"><label>Konu Başlığı *</label><input className="inp" data-testid="addserver-title" value={form.title} onChange={upd('title')} placeholder="Konu Başlığı Giriniz" /></div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                 <div className="field"><label>Başlangıç Leveli</label>
                   <select className="sel" value={form.startLevel} onChange={upd('startLevel')}>
@@ -144,12 +155,29 @@ export default function AddServer() {
                 {Object.keys(SYSTEM_FEATURE_LABELS).map((k) => (
                   <div key={k} className="field" style={{ marginBottom: 0 }}>
                     <label>{SYSTEM_FEATURE_LABELS[k]} Var Mı ?</label>
-                    <select className="sel" value={form.system[k] ? '0' : '1'} onChange={updSys(k)}>
+                    <select className="sel" data-testid={`sys-select-${k}`} value={form.system[k] ? '0' : '1'} onChange={updSys(k)}>
                       <option value="0">✅ {SYSTEM_FEATURE_LABELS[k]} Var</option>
                       <option value="1">❌ {SYSTEM_FEATURE_LABELS[k]} Yok</option>
                     </select>
                   </div>
                 ))}
+                <div className="badge-picker-wrap">
+                  <label className="badge-picker-title">Kartta Öne Çıkacak Rozetler <span>(en fazla 4)</span></label>
+                  <div className="badge-picker" data-testid="featured-badge-picker">
+                    {Object.keys(SYSTEM_FEATURE_LABELS).filter((k) => form.system[k]).map((k) => (
+                      <button
+                        type="button"
+                        key={k}
+                        data-testid={`featured-pick-${k}`}
+                        className={`badge-pick ${form.featuredSystem.includes(k) ? 'on' : ''}`}
+                        onClick={() => toggleFeatured(k)}
+                      >
+                        {form.featuredSystem.includes(k) ? '★' : '☆'} {SYSTEM_FEATURE_LABELS[k]}
+                      </button>
+                    ))}
+                  </div>
+                  <span className="hint">Seçmezsen kartta ilk 4 açık sistem özelliği otomatik gösterilir.</span>
+                </div>
               </div>
             </div>
           </div>
@@ -161,11 +189,11 @@ export default function AddServer() {
             <button type="button" className="btn" onClick={prevTab}><ArrowLeft size={16} /> Geri</button>
           )}
           {tabIndex < TABS.length - 1 ? (
-            <button type="button" className="btn btn-primary" style={{ marginLeft: 'auto' }} onClick={nextTab}>
+            <button key="next" type="button" data-testid="addserver-next-btn" className="btn btn-primary" style={{ marginLeft: 'auto' }} onClick={nextTab}>
               Devam <ArrowRight size={16} />
             </button>
           ) : (
-            <button className="btn btn-primary" type="submit" style={{ marginLeft: 'auto', padding: '13px 22px' }}>
+            <button key="publish" type="button" data-testid="addserver-publish-btn" className="btn btn-primary" style={{ marginLeft: 'auto', padding: '13px 22px' }} onClick={submit}>
               <Check size={18} /> Serveri Yayınla
             </button>
           )}
