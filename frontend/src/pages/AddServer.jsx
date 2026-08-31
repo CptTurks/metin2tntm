@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ChevronRight, Rocket, Server, Settings2, Cpu, ArrowRight, ArrowLeft, Check } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { CATEGORIES, FEATURE_LABELS, SYSTEM_FEATURE_LABELS, DEFAULT_SYSTEM } from '../mock/mock';
+import InfoModal from '../components/InfoModal';
 import { toast } from 'sonner';
 
 const YESNO = [
@@ -25,14 +26,16 @@ const TABS = [
 
 export default function AddServer() {
   const navigate = useNavigate();
-  const { addServer } = useApp();
+  const { addServer, taxonomy } = useApp();
   const [tab, setTab] = useState('bilgi');
+  const [infoOk, setInfoOk] = useState(false);
   const [form, setForm] = useState({
     name: '', title: '', category: 'farm-server', startLevel: 1, endLevel: 105,
     banner: CATEGORIES[1].img, webUrl: '', discordUrl: '', description: '',
     features: { lycan: true, simya: true, kusak: true, kemer: true, tilsim: true, pet: true, binek: true, kostum: true, beceri: true, efsunSabit: true },
     system: { ...DEFAULT_SYSTEM },
     featuredSystem: [],
+    taxTags: [],
   });
 
   const upd = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -47,6 +50,7 @@ export default function AddServer() {
     if (!has && form.featuredSystem.length >= 4) { toast.error('Kartta en fazla 4 rozet gösterilir.'); return; }
     setForm((f) => ({ ...f, featuredSystem: has ? f.featuredSystem.filter((x) => x !== k) : [...f.featuredSystem, k] }));
   };
+  const toggleTaxTag = (name) => setForm((f) => ({ ...f, taxTags: f.taxTags.includes(name) ? f.taxTags.filter((x) => x !== name) : [...f.taxTags, name] }));
 
   const submit = (e) => {
     e.preventDefault();
@@ -63,6 +67,7 @@ export default function AddServer() {
 
   return (
     <>
+      {!infoOk && <InfoModal onAccept={() => setInfoOk(true)} />}
       <div className="crumb"><Link to="/">Anasayfa</Link> <ChevronRight size={14} /> <span>Yeni Server Ekle</span></div>
 
       <div className="m2-top">
@@ -142,6 +147,20 @@ export default function AddServer() {
                   </select>
                 </div>
               </div>
+              {taxonomy.length > 0 && (
+                <div style={{ marginTop: 18, paddingTop: 16, borderTop: '1px solid var(--stroke)' }} data-testid="tax-pick">
+                  {taxonomy.map((g) => (
+                    <div className="tax-pick-group" key={g.id}>
+                      <span className="tax-pick-group__name">{g.name}</span>
+                      <div className="tax-pick">
+                        {g.tags.map((t) => (
+                          <button type="button" key={t.id} className={`badge-pick ${form.taxTags.includes(t.name) ? 'on' : ''}`} onClick={() => toggleTaxTag(t.name)}>{t.name}</button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}

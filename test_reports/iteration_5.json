@@ -1,0 +1,27 @@
+{
+  "summary": "Frontend-only retest (no backend) of the 3 follow-up fixes on the preview URL: (1) hidden comments must not leak to public ServerDetail, (2) hidden server direct-URL guard, (3) mobile header overlap at 390px. All 3 core fixes VERIFIED PASS via Playwright with real admin login (mert/123456), hide/unhide + logout-to-public-view cycles. One residual cosmetic issue: on mobile the header search input does NOT get its own full-width row (it shrinks to ~95px wide, 53px text area) — no overlap though.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Header (mobile <=820px)", "issue": "Overlap is FIXED, but the intended 'search moves to its own full-width row' did not happen: .header-search{width:100%} is inside .header-actions (display:flex, no wrap), so it just shrinks to 95px (input text area 53px) and sits at the right of the wrapped 2nd row. Fix: add .header-actions{flex-wrap:wrap} + .header-search{flex:1 1 100%;order:3} inside the 820px media query.", "selector": "[data-testid=\"header-search-input\"]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "OPTIONAL/LOW: make header search truly full-width on mobile (.header-actions needs flex-wrap:wrap and .header-search flex-basis:100% inside @media max-width:820px)."
+  ],
+  "critical_code_review_comments": [
+    "ServerDetail.jsx now filters hidden comments for list/count/avg correctly (visibleComments) — verified. Note: filter applies to admins too, so admins cannot preview hidden comments on the detail page (acceptable, moderation is in /admin).",
+    "Hidden-server guard `s.hidden && !(user && user.isAdmin)` is correct; hidden servers stay reachable for admins by design."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend-only)", "frontend": "100% of 3 retested items (1 residual LOW cosmetic)"},
+  "seed_data_creation": "None persisted; toggles were reverted (comment 311-1 unhidden, server 311 set back to Aktif). localStorage is per-session anyway.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "/app/memory/test_credentials.md now populated (mert/123456) and worked.",
+  "context_for_next_testing_agent": "Verified this run: (a) Admin > Yorum Yönetimi > Gizle on comment 311-1 (Elora2) -> admin item shows '(Gizli)'; after logout, public /server/311 showed count 'Yorumlar (1)' (was 2), avg 4.0 (was 4.5), comment text absent; Göster restored count 2 / avg 4.5 and the comment reappeared. (b) Server 311 set Gizli -> public /server/311 renders 'Server bulunamadı veya yayından kaldırılmış'; reverted to Aktif. (c) 390x800 header: bounding-box checks show no overlap between .brand-logo, .apps-menu .icon-btn and .header-search; search submit works (/ara?q=Elora returns Elora2). Logout flow: click .header-actions .pill-primary then 'Çıkış Yap' text (no testid on user menu/logout).",
+  "rca_of_the_issue": "Prior HIGH bug (hidden comment leak) root cause was ServerDetail rendering s.comments unfiltered; now fixed with visibleComments used for list, count and average. Residual mobile issue: width:100% on .header-search has no effect because its flex parent (.header-actions) does not wrap."
+}

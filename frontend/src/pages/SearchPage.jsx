@@ -15,9 +15,10 @@ export default function SearchPage() {
 
   const results = q
     ? sortServers(servers.filter((s) =>
+        !s.hidden && (
         s.name.toLowerCase().includes(q) ||
         s.title.toLowerCase().includes(q) ||
-        (CATEGORY_LABELS[s.category] || '').toLowerCase().includes(q)
+        (CATEGORY_LABELS[s.category] || '').toLowerCase().includes(q))
       ), sort)
     : [];
 

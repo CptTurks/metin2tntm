@@ -11,7 +11,7 @@ export default function CategoryPage() {
   const navigate = useNavigate();
   const { servers } = useApp();
   const [sort, setSort] = useState('likes');
-  const list = sortServers(servers.filter((s) => s.category === slug), sort);
+  const list = sortServers(servers.filter((s) => s.category === slug && !s.hidden), sort);
   const cat = CATEGORIES.find((c) => c.slug === slug);
 
   return (

@@ -16,9 +16,10 @@ export default function ServerDetail() {
   const [text, setText] = useState('');
   const [authOpen, setAuthOpen] = useState(false);
 
-  if (!s) return <div className="card"><div className="empty-state">Server bulunamadı. <Link to="/">Anasayfaya dön</Link></div></div>;
+  if (!s || (s.hidden && !(user && user.isAdmin))) return <div className="card"><div className="empty-state">Server bulunamadı veya yayından kaldırılmış. <Link to="/">Anasayfaya dön</Link></div></div>;
 
-  const avg = s.comments.length ? (s.comments.reduce((a, c) => a + c.rating, 0) / s.comments.length).toFixed(1) : '0.0';
+  const visibleComments = s.comments.filter((c) => !c.hidden);
+  const avg = visibleComments.length ? (visibleComments.reduce((a, c) => a + c.rating, 0) / visibleComments.length).toFixed(1) : '0.0';
 
   const submitComment = (e) => {
     e.preventDefault();
@@ -102,7 +103,7 @@ export default function ServerDetail() {
 
         <div className="card">
           <div className="card-head" style={{ justifyContent: 'space-between' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><MessagesSquare size={18} /> 💬 Yorumlar ({s.comments.length})</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><MessagesSquare size={18} /> 💬 Yorumlar ({visibleComments.length})</span>
             <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14 }}>
               <Star size={16} className="star on" fill="#ffb020" /> {avg} / 5
             </span>
@@ -127,9 +128,9 @@ export default function ServerDetail() {
               <button className="btn btn-primary" type="submit">Yorum Gönder</button>
             </form>
 
-            {s.comments.length === 0 ? (
+            {visibleComments.length === 0 ? (
               <div className="empty-state">Henüz yorum yapılmamış. İlk yorumu sen yap!</div>
-            ) : s.comments.map((c) => (
+            ) : visibleComments.map((c) => (
               <div key={c.id} className="cmt-item">
                 <div className="cmt-head">
                   <div className="cmt-avatar">{c.user.charAt(0).toUpperCase()}</div>

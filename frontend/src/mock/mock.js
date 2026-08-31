@@ -136,7 +136,8 @@ export const DEFAULT_SYSTEM = {
   ticaretCami: true, yardimciSaman: true, cevrimdisiPazar: true, itemKilitleme: true,
 };
 
-// Mevcut mock serverlere varsayılan sistem özellikleri ekle
+// Mevcut mock serverlere varsayılan sistem/yönetim alanları ekle
+const ONLINE_SEED = [128, 342, 87, 512, 291, 176];
 SERVERS.forEach((s, i) => {
   if (!s.system) {
     s.system = { ...DEFAULT_SYSTEM };
@@ -144,7 +145,21 @@ SERVERS.forEach((s, i) => {
     if (i % 2 === 1) { s.system.cevrimdisiPazar = false; s.system.loncaAjan = false; }
     if (i % 3 === 0) { s.system.yardimciSaman = false; }
   }
+  s.hidden = false;
+  s.vipTier = s.vip ? 'red' : 'none';
+  s.vipUntil = s.vip ? '2026-12-31' : '';
+  s.featured = !!s.vip;
+  s.online = ONLINE_SEED[i] ?? 0;
+  s.featuredSystem = s.featuredSystem || [];
+  s.taxTags = s.taxTags || [];
+  s.comments = (s.comments || []).map((c) => ({ hidden: false, ...c }));
 });
+// Çeşitlilik için bir sunucuyu yeşil VIP yap
+const _phoenix = SERVERS.find((s) => s.name === 'PhoenixMT2');
+if (_phoenix) _phoenix.vipTier = 'green';
+
+// VIP kademe etiketleri (gerçek backend: yeşil/kırmızı iki kademe)
+export const VIP_TIERS = { none: 'Yok', green: 'Yeşil', red: 'Kırmızı' };
 
 export const SITE_STATS = {
   serverCount: 6, memberCount: 1284, totalVotes: 4127, dailyVisits: 8563,
@@ -195,4 +210,34 @@ export const AD_PRICES = [
   { icon: 'rocket', name: 'Konu İçi Alt Geniş Reklam', size: '750x245', duration: '1 Hafta', price: '750 TL', accent: true },
   { icon: 'rocket', name: 'Konu İçi Kare - 1', size: '329x274', duration: '1 Hafta', price: '750 TL', accent: true },
   { icon: 'rocket', name: 'Konu İçi Kare - 2', size: '329x274', duration: '1 Hafta', price: '750 TL', accent: true },
+];
+
+// Sunucu Ekle bilgilendirme popup'ı kuralları (** ile kalın)
+export const INFO_RULES = [
+  { icon: 'check', text: 'Sadece **aktif ve erişilebilir** sunucuları sitemize ekleyiniz.' },
+  { icon: 'warn', text: 'Oyun içerisinde, haksızlıklara, yardımlara müsade etmeyin.' },
+  { icon: 'clock', text: 'Kısa süreli server olmaktan kaçının. Oyuncularınıza kaliteli hizmet verin.' },
+  { icon: 'pin', text: 'Gerekli görüldüğünde, kurallara uymayan ilanlar **haber verilmeden kaldırılabilir.**' },
+];
+
+// Admin — reklam (banner) yönetimi başlangıç verisi
+export const BANNER_POSITIONS = {
+  sol: 'Sol Dikey', sag: 'Sağ Dikey', ust: 'Üst Yatay', popup: 'Pop-Up',
+  'sayfa-giydirme': 'Sayfa Giydirme', orta: 'Orta Kare',
+};
+export const ADMIN_BANNERS = [
+  { id: 1, position: 'popup', img: POPUP_AD.img, url: POPUP_AD.url, clicks: 152, impressions: 4300, active: true, start: '2026-06-01', end: '2026-06-30' },
+  { id: 2, position: 'ust', img: TOP_BANNERS[0].img, url: '#', clicks: 88, impressions: 2100, active: true, start: '2026-06-01', end: '2026-06-15' },
+  { id: 3, position: 'sol', img: SIDE_BANNERS.left, url: '#', clicks: 40, impressions: 1500, active: true, start: '', end: '' },
+  { id: 4, position: 'sag', img: SIDE_BANNERS.right, url: '#', clicks: 33, impressions: 1450, active: false, start: '', end: '' },
+];
+
+// Admin — site duyurusu (üst bar)
+export const ANNOUNCEMENT_SEED = { text: '🎉 Yeni sezon başladı! Sunucunu ekle, ilk hafta üst sırada öne çık.', active: true };
+
+// Admin — özellik (taksonomi) yönetimi: kategori > etiket. Sunucu ekleme formunu besler.
+export const TAXONOMY_SEED = [
+  { id: 1, name: 'Seviye Aralığı', tags: [{ id: 11, name: '1-99' }, { id: 12, name: '1-105' }, { id: 13, name: '1-120' }] },
+  { id: 2, name: 'Zorluk', tags: [{ id: 21, name: 'Emek' }, { id: 22, name: 'Orta' }, { id: 23, name: 'Kolay' }] },
+  { id: 3, name: 'Ekol', tags: [{ id: 31, name: 'Oldschool' }, { id: 32, name: 'Newschool' }] },
 ];

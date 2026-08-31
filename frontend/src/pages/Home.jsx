@@ -11,8 +11,9 @@ export default function Home() {
   const { servers } = useApp();
   const navigate = useNavigate();
   const [sort, setSort] = useState('date');
-  const vipServers = servers.filter((s) => s.vip).sort((a, b) => b.likes - a.likes);
-  const normalServers = sortServers(servers.filter((s) => !s.vip), sort);
+  const visible = servers.filter((s) => !s.hidden);
+  const vipServers = visible.filter((s) => s.featured).sort((a, b) => b.likes - a.likes);
+  const normalServers = sortServers(visible.filter((s) => !s.featured), sort);
 
   return (
     <>

@@ -35,6 +35,15 @@ stack'ine port edecek. React app sadece UI/UX blueprint'idir.
 - **Öne Çıkan Rozet Seçimi**: Sunucu Ekle → Sistem Özellikleri sekmesinde sahibi kartta görünecek rozetleri seçer (max 4, `server.featuredSystem`).
 - **Bugfix**: 3-sekmeli formda "Devam" butonunun erken submit hatası + StrictMode çift toast düzeltildi.
 - Testing agent ile doğrulandı (iteration_1/2/3.json — hepsi %100).
+### Bu oturum — v1.5 (Admin paneli + kart iyileştirmeleri)
+- **Admin paneli 5 sekme**: Server (Aktif/Gizle, VIP kademe Yeşil/Kırmızı+tarih, Öneri, Sil), Üye (rol + şifre sıfırlama modalı), Yorum (Gizle/Göster + Sil), **Reklam** (banner CRUD + site duyuru barı), **Özellik** (taksonomi kategori/etiket CRUD).
+- **VIP kademe** yeşil/kırmızı çerçeve+rozet; anasayfa vitrini `featured` bayrağı; `hidden` sunucular public'ten gizli.
+- Kart sağ üstte **online sayacı** + beğeni; sol "Beğeni" rozeti kaldırıldı; **"+N" sistem rozetleri tıkla/hover ile açılıyor**.
+- /sunucu-ekle girişinde **BİLGİLENDİRME modalı**; Genel Özellikler'de admin-yönetimli **taksonomi etiket seçimi**.
+- Profil'den kart rozet düzenleme modalı.
+- Fix: gizli yorumlar detay sayfasından da gizlendi; mobil header çakışması.
+- Testing agent: iteration_4 (%93→fix), iteration_5 (3/3 %100).
+- Yeni state: `banners`, `announcement`, `taxonomy`; server alanları: `hidden, vipTier, vipUntil, featured, online, featuredSystem, taxTags`.
 
 ## Backlog (kalan tanıtım görevleri)
 - P2: **GM Kodları Sayfası** — aranabilir GM komutları listesi.

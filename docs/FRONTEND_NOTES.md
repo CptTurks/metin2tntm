@@ -113,3 +113,20 @@ Kategori kart görselleri `categories.image`, server kapakları `servers.banner`
 - **Değişen**: `ServerRow` "+N" sayacı artık `featuredSystem` üzerinden hesaplanır (sahibi 3 rozet seçtiyse
   yanıltıcı fazladan sayaç çıkmaz).
 - **Eklenen (test)**: `addserver-name`, `addserver-title`, `addserver-next-btn`, `addserver-publish-btn`, `sys-select-<key>`.
+### v1.5 — Admin paneli genişletme + kart iyileştirmeleri
+- **Eklenen (Admin)**: 5 sekme — Server / Üye / Yorum / **Reklam** / **Özellik** (istatistik kartları korundu).
+  - Server: Aktif/Gizle toggle (yayından kaldırma), VIP kademe (Yok/Yeşil/Kırmızı) + bitiş tarihi, Öneri toggle (anasayfa vitrini), Sil.
+  - Üye: "Düzenle" modalı — rol değiştir (Üye/Admin) + şifre sıfırla.
+  - Yorum: Gizle/Göster toggle + Sil.
+  - Reklam: banner listesi (konum/görsel/tıklama/gösterim/aktif), yeni banner formu, Aktif/Pasif + Sil; ayrıca **Site Duyurusu** metni + aç/kapa (üst bar).
+  - Özellik: taksonomi — kategori ekle/sil + kategori altı etiket ekle/sil (Sunucu Ekle formunu besler).
+- **Eklenen**: Üst **site duyuru barı** (Layout), admin'den yönetilir.
+- **Eklenen**: **VIP kademe** yeşil/kırmızı çerçeve + rozet (`vipTier`); anasayfa vitrini `featured` bayrağına bağlandı (eski `vip` migrate edildi). `hidden` sunucular tüm public listelerden ve doğrudan detay URL'sinden (admin hariç) çıkarıldı.
+- **Eklenen**: Kart sağ üstünde canlı **online sayacı** rozeti + beğeni sayısı; sol kolondaki "Beğeni" rozeti kaldırıldı.
+- **Eklenen**: **Bilgilendirme (BİLGİLENDİRME) modalı** — /sunucu-ekle girişinde kural onayı (`InfoModal`).
+- **Eklenen**: Sunucu Ekle "Genel Özellikler" sekmesinde **admin-yönetimli taksonomi** etiket seçimi (`taxTags`).
+- **Eklenen**: Profil → Serverlerim → "Rozetler" modalı ile kart rozetlerini yayından sonra düzenleme.
+- **Düzeltilen (BUG - kullanıcı bildirimi)**: Sistem rozetlerinde **"+N" tıklama/hover ile diğerleri açılıyor** (satır içi genişleme, kart tarafından kırpılmaz).
+- **Düzeltilen (BUG - HIGH)**: Admin'de gizlenen yorumlar artık public server detay sayfasında da gizli (liste + sayaç + ortalama puan `!c.hidden` ile filtrelenir).
+- **Düzeltilen (UI)**: Mobilde (≤820px) header logo/arama çakışması — arama tam satıra taşındı.
+- Yeni CSS class'ları: `.site-announce`, `.srv-vip--green/--red`, `.srv-vip-badge--green/--red`, `.srv-right-top`, `.srv-stat(--online/--like)`, `.srv-sys-more/.srv-sys-extra`, `.switch`, `.vip-tag`, `.mini-sel/.mini-inp`, `.admin-banner-*`, `.tax-group/.tax-tag/.tax-add`, `.tax-pick-*`, `.info-*`.

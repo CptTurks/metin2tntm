@@ -1,0 +1,36 @@
+{
+  "summary": "Frontend-only E2E testing (no backend) of the Metin2 PvP promo site on the preview URL. Verified the REPORTED BUG FIX for the '+N' system-badge expansion (hover AND click, desktop + mobile, no clipping), removal of left 'Beğeni' badge, right-column online+like stats, VIP green/red tiers + featured showcase, site announcement bar, BİLGİLENDİRME info-modal gate on /sunucu-ekle, taxonomy pick block, all 5 admin tabs (server active/VIP/featured/delete, user role+password reset, comment hide/delete, banner+announcement CRUD, taxonomy CRUD), profile rozet editor, sort bar. 1 functional bug found (hidden comments still public), 1 mobile layout overlap.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "ServerDetail comments", "issue": "Comments hidden by admin (toggleCommentHidden) are STILL rendered on the public server detail page and are counted in the 'Yorumlar (N)' header. /app/frontend/src/pages/ServerDetail.jsx lines ~105/130-132 iterate s.comments without filtering c.hidden.", "selector": "/server/<id> .cmt-item", "priority": "HIGH"},
+      {"component": "Header (mobile 390px)", "issue": "Logo 'TOPMETIN2PVP' overlaps the search input and the grid/menu icon at 390px width — text visually collides (see mobile screenshot).", "selector": "header .pill / [data-testid=header-search-input]", "priority": "MEDIUM"},
+      {"component": "AuthModal", "issue": "No data-testid attributes existed on the login/register modal, inputs or submit button (blocked automated auth). Added by testing agent (auth-modal, auth-username-input, auth-password-input, auth-submit-btn); modal tabs (Giriş/Kayıt), register email input and logout control still lack testids.", "selector": "[data-testid=\"auth-modal\"]", "priority": "LOW"}
+    ],
+    "integration_issues": [
+      {"flow": "Hidden server direct access", "issue": "A server set to 'Gizli' is correctly excluded from Home/Category/Search lists, but /server/<id> is not verified to block/404 hidden servers (public detail page still reachable by direct URL).", "affected_selectors": ["/server/<id>"]}
+    ],
+    "design_issues": [
+      {"screen": "Console (dev)", "issues": ["React hydration warning: '<span> cannot be a child of <option>' fired on /sunucu-ekle. Appears to originate from the visual-editor instrumentation wrapping {} expressions inside <option> in AddServer.jsx line 108; harmless but noisy — consider static option labels."]},
+      {"screen": "Mobile 390px home card", "issues": ["Left column badges + '− gizle' chip wrap acceptably, but the VIP showcase title wraps to 2 lines behind the 'VIP OL' button"]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Filter hidden comments out of the public ServerDetail comment list and comment count (and rating average).",
+    "Fix mobile (<=430px) header overlap between logo, grid icon and search input.",
+    "Optionally block/redirect direct access to /server/<id> for hidden servers."
+  ],
+  "critical_code_review_comments": [
+    "ServerDetail.jsx: s.comments used raw — must apply .filter(c => !c.hidden) for public view (count, average rating, list).",
+    "ServerRow.jsx: '+N' reveal uses CSS display:contents on the pop container; the container itself therefore has no box (Playwright/AT report it invisible) even though child badges are visible — acceptable but non-obvious for testing; consider display:inline-flex/contents on a wrapper with data-testid on a boxed element."
+  ],
+  "updated_files": ["/app/frontend/src/components/AuthModal.jsx"],
+  "success_rate": {"backend": "N/A (frontend-only)", "frontend": "93%"},
+  "seed_data_creation": "Registered throwaway users via UI: testqa_user (promoted to Yönetici during role test, not reverted) and qa_pwd_user (password reset to brandnew2). Both live only in browser localStorage of the test session.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "/app/memory/test_credentials.md is EMPTY (only header comments) — admin creds mert/123456 were taken from the review request and worked. Please write them into that file.",
+  "context_for_next_testing_agent": "Verified PASS: announce-bar live text edit + on/off toggle; +N chip hover reveal AND click toggle (chip text '+N' <-> '− gizle') on desktop and mobile with no clipping outside the card; left 'Beğeni' badge gone; server-online-<id> shows '🟢 N online' plus like count; DragonPvP '👑 KIRMIZI VIP' + PhoenixMT2 '👑 YEŞİL VIP' frames in 'VIP Öne Çıkan Serverler'; 'Son Eklenen' + sort bar (Beğeni/Tıklanma/Tarih reorder verified); info modal (4 rules) accept reveals usable form; tax-pick chips toggle class 'on'; all 5 admin tabs render with 4 stats cards; server Aktif/Gizli toggle hides server from Home; VIP select shows date input; featured toggle works; user modal role toggle updates rank to 'Yönetici' and password reset lets user log in with new password while old password is rejected; comment Gizle dims + '(Gizli)'; banner add/toggle(Aktif->Pasif)/delete; taxonomy group+tag add/delete and new group appears in AddServer tax-pick; profile rozet modal (7 options, max-4 enforced with toast, save persists badges to card). NOTE browser contexts start with fresh localStorage each run — register users inside the same script run before admin user tests.",
+  "rca_of_the_issue": "Hidden-comment leak: admin sets comment.hidden=true via toggleCommentHidden in AppContext, but ServerDetail.jsx renders s.comments directly (no hidden filter), so moderation has no public effect. Repro: /admin > Yorum Yönetimi > Gizle on any comment > open that server's detail page > comment still visible."
+}

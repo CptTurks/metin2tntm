@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ChevronRight, Server, Heart, MessageSquare, Settings, Calendar, Mail, ThumbsUp } from 'lucide-react';
+import { ChevronRight, Server, Heart, MessageSquare, Settings, Calendar, Mail, ThumbsUp, Star, X } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { CATEGORY_LABELS } from '../mock/mock';
+import { CATEGORY_LABELS, SYSTEM_FEATURE_LABELS } from '../mock/mock';
 import { toast } from 'sonner';
 
 export default function Profile() {
-  const { user, servers, deleteServer } = useApp();
+  const { user, servers, deleteServer, updateServerFeaturedSystem } = useApp();
   const navigate = useNavigate();
   const [tab, setTab] = useState('servers');
+  const [editSrv, setEditSrv] = useState(null);
+  const [sel, setSel] = useState([]);
 
   if (!user) {
     return (
@@ -21,6 +23,15 @@ export default function Profile() {
 
   const myServers = servers.filter((s) => s.owner === user.username);
   const myComments = servers.flatMap((s) => s.comments.filter((c) => c.user === user.username).map((c) => ({ ...c, server: s.name, serverId: s.id })));
+
+  const openEdit = (s) => { setEditSrv(s); setSel(Array.isArray(s.featuredSystem) ? s.featuredSystem : []); };
+  const toggleSel = (k) => {
+    if (sel.includes(k)) { setSel(sel.filter((x) => x !== k)); return; }
+    if (sel.length >= 4) { toast.error('En fazla 4 rozet seçebilirsin.'); return; }
+    setSel([...sel, k]);
+  };
+  const saveEdit = () => { updateServerFeaturedSystem(editSrv.id, sel); toast.success('Kart rozetleri güncellendi.'); setEditSrv(null); };
+  const editEnabled = editSrv ? Object.keys(SYSTEM_FEATURE_LABELS).filter((k) => (editSrv.system || {})[k]) : [];
 
   return (
     <>
@@ -55,12 +66,12 @@ export default function Profile() {
       </div>
 
       {tab === 'servers' && (
-        <div className="card">
+        <div className="card" style={{ overflowX: 'auto' }}>
           {myServers.length === 0 ? (
             <div className="empty-state">Henüz server eklemediniz. <Link to="/sunucu-ekle" style={{ color: 'var(--brand2)' }}>Hemen ekle</Link></div>
           ) : (
             <table className="data-table">
-              <thead><tr><th>Server</th><th>Kategori</th><th>Beğeni</th><th>Tıklama</th><th></th></tr></thead>
+              <thead><tr><th>Server</th><th>Kategori</th><th>Beğeni</th><th>Tıklama</th><th>İşlem</th></tr></thead>
               <tbody>
                 {myServers.map((s) => (
                   <tr key={s.id}>
@@ -68,7 +79,12 @@ export default function Profile() {
                     <td>{CATEGORY_LABELS[s.category]}</td>
                     <td>{s.likes}</td>
                     <td>{s.webClicks + s.discordClicks}</td>
-                    <td><button className="btn btn-danger" style={{ padding: '6px 12px' }} onClick={() => { deleteServer(s.id); toast.success('Server silindi.'); }}>Sil</button></td>
+                    <td>
+                      <div className="admin-actions">
+                        <button className="btn" style={{ padding: '6px 12px' }} data-testid={`profile-edit-badges-${s.id}`} onClick={() => openEdit(s)}><Star size={14} /> Rozetler</button>
+                        <button className="btn btn-danger" style={{ padding: '6px 12px' }} onClick={() => { deleteServer(s.id); toast.success('Server silindi.'); }}>Sil</button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -99,6 +115,26 @@ export default function Profile() {
           <div className="field"><label>Yeni Şifre</label><input className="inp" type="password" placeholder="••••••" /></div>
           <button className="btn btn-primary" onClick={() => toast.success('Bilgiler kaydedildi (demo).')}>Kaydet</button>
         </div></div>
+      )}
+
+      {/* Kart rozet düzenleme modalı */}
+      {editSrv && (
+        <div className="modal-back" onClick={() => setEditSrv(null)}>
+          <div className="modal-box" role="dialog" aria-modal="true" data-testid="profile-badge-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-head"><h3>Kart Rozetleri — {editSrv.name}</h3><button className="icon-btn" onClick={() => setEditSrv(null)}><X size={18} /></button></div>
+            <div className="modal-body">
+              <p className="hint" style={{ marginTop: 0, marginBottom: 12 }}>Kartta öne çıkacak sistem rozetlerini seç (en fazla 4).</p>
+              <div className="badge-picker" data-testid="profile-badge-picker">
+                {editEnabled.map((k) => (
+                  <button type="button" key={k} className={`badge-pick ${sel.includes(k) ? 'on' : ''}`} data-testid={`profile-pick-${k}`} onClick={() => toggleSel(k)}>
+                    {sel.includes(k) ? '★' : '☆'} {SYSTEM_FEATURE_LABELS[k]}
+                  </button>
+                ))}
+              </div>
+              <button className="btn btn-primary" style={{ width: '100%', marginTop: 16 }} data-testid="profile-badge-save" onClick={saveEdit}>Kaydet</button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

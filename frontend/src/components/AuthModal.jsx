@@ -26,7 +26,7 @@ export default function AuthModal({ onClose, defaultTab = 'login' }) {
 
   return (
     <div className="modal-back" onClick={onClose}>
-      <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-box" data-testid="auth-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <h3>{tab === 'login' ? 'Giriş Yap' : 'Kayıt Ol'}</h3>
           <button className="icon-btn" onClick={onClose} aria-label="Kapat"><X size={18} /></button>
@@ -38,7 +38,7 @@ export default function AuthModal({ onClose, defaultTab = 'login' }) {
         <form className="modal-body" onSubmit={submit}>
           <div className="field">
             <label>{tab === 'login' ? 'Kullanıcı Adı / E-posta' : 'Kullanıcı Adı'}</label>
-            <input className="inp" value={form.username} onChange={upd('username')} placeholder={tab === 'login' ? 'kullanıcı adınız' : 'yeni kullanıcı adı'} />
+            <input className="inp" data-testid="auth-username-input" value={form.username} onChange={upd('username')} placeholder={tab === 'login' ? 'kullanıcı adınız' : 'yeni kullanıcı adı'} />
           </div>
           {tab === 'register' && (
             <div className="field">
@@ -48,9 +48,9 @@ export default function AuthModal({ onClose, defaultTab = 'login' }) {
           )}
           <div className="field">
             <label>Şifre</label>
-            <input className="inp" type="password" value={form.password} onChange={upd('password')} placeholder="••••••" />
+            <input className="inp" data-testid="auth-password-input" type="password" value={form.password} onChange={upd('password')} placeholder="••••••" />
           </div>
-          <button className="btn btn-primary" style={{ width: '100%' }} type="submit">
+          <button className="btn btn-primary" data-testid="auth-submit-btn" style={{ width: '100%' }} type="submit">
             {tab === 'login' ? 'Giriş Yap' : 'Kayıt Ol'}
           </button>
           {tab === 'login' && (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Home as HomeIcon, MessageCircle, ThumbsUp, ArrowRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 export default function ServerRow({ s }) {
   const navigate = useNavigate();
   const { voteServer, trackClick, votes } = useApp();
+  const [popOpen, setPopOpen] = useState(false);
   const f = s.features;
   const sys = s.system || {};
   const enabledSys = Object.keys(SYSTEM_FEATURE_LABELS).filter((k) => sys[k]);
@@ -15,7 +16,12 @@ export default function ServerRow({ s }) {
     ? s.featuredSystem.filter((k) => sys[k])
     : enabledSys;
   const shownSys = featuredSys.slice(0, 4);
-  const extraSys = featuredSys.length - shownSys.length;
+  const hiddenSys = enabledSys.filter((k) => !shownSys.includes(k));
+  const extraSys = hiddenSys.length;
+
+  const tier = s.vipTier && s.vipTier !== 'none' ? s.vipTier : null;
+  const vipClass = tier ? `srv-vip srv-vip--${tier}` : '';
+  const vipLabel = tier === 'green' ? 'YEŞİL VIP' : 'KIRMIZI VIP';
 
   const doVote = (e) => {
     e.preventDefault();
@@ -29,8 +35,8 @@ export default function ServerRow({ s }) {
   };
 
   return (
-    <article className={`srv-row ${s.vip ? 'srv-vip' : ''}`}>
-      {s.vip && <span className="srv-vip-badge">👑 VIP</span>}
+    <article className={`srv-row ${vipClass}`}>
+      {tier && <span className={`srv-vip-badge srv-vip-badge--${tier}`}>👑 {vipLabel}</span>}
       <div className="srv-left">
         <div className="srv-meta">
           <div className="srv-meta-line"><span className="srv-meta-key">⚔️ Başlangıç Seviyesi</span><span className="srv-meta-val">{s.startLevel}. Level</span></div>
@@ -39,15 +45,30 @@ export default function ServerRow({ s }) {
           <div className="srv-meta-line"><span className="srv-meta-val">{f.efsunSabit ? '✅ Efsun Oranları Sabit' : '❌ Efsun Oranları Değişken'}</span></div>
           <div className="srv-meta-line"><span className="srv-meta-val">{f.kostum ? '✅ Kostümler Var' : '❌ Kostümler Yok'}</span></div>
           <div className="srv-badges">
-            <span className="srv-badge srv-badge-like">👍 {s.likes} Beğeni</span>
             <a className="srv-badge srv-badge-cat" href={`#${s.category}`} onClick={(e) => { e.preventDefault(); navigate(`/kategori/${s.category}`); }}>🗂️ {CATEGORY_LABELS[s.category]}</a>
           </div>
           {shownSys.length > 0 && (
-            <div className="srv-sys-badges" data-testid={`server-sys-badges-${s.id}`}>
+            <div className={`srv-sys-badges ${popOpen ? 'open' : ''}`} data-testid={`server-sys-badges-${s.id}`}>
               {shownSys.map((k) => (
                 <span key={k} className="srv-sys-badge">✦ {SYSTEM_FEATURE_LABELS[k]}</span>
               ))}
-              {extraSys > 0 && <span className="srv-sys-badge srv-sys-badge--more">+{extraSys}</span>}
+              {extraSys > 0 && (
+                <span
+                  className="srv-sys-badge srv-sys-badge--more srv-sys-more"
+                  data-testid={`server-sys-more-${s.id}`}
+                  title="Tüm sistem özelliklerini gör"
+                  onClick={(e) => { e.stopPropagation(); setPopOpen((o) => !o); }}
+                >
+                  {popOpen ? '− gizle' : `+${extraSys}`}
+                </span>
+              )}
+              {extraSys > 0 && (
+                <span className="srv-sys-extra" data-testid={`server-sys-pop-${s.id}`}>
+                  {hiddenSys.map((k) => (
+                    <span key={k} className="srv-sys-badge">✦ {SYSTEM_FEATURE_LABELS[k]}</span>
+                  ))}
+                </span>
+              )}
             </div>
           )}
         </div>
@@ -62,6 +83,10 @@ export default function ServerRow({ s }) {
       </div>
 
       <div className="srv-right">
+        <div className="srv-right-top">
+          <span className="srv-stat srv-stat--online" data-testid={`server-online-${s.id}`}><span className="dot" /> {s.online} online</span>
+          <span className="srv-stat srv-stat--like"><ThumbsUp size={12} /> {s.likes}</span>
+        </div>
         <a className="srv-btn srv-btn-like" href={s.webUrl} onClick={(e) => goExternal(e, s.webUrl, 'web')}>
           <HomeIcon size={15} /> <span>Anasayfa</span>
           <span className="srv-click-badge">{s.webClicks}</span>
