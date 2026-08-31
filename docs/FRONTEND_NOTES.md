@@ -147,3 +147,10 @@ Kategori kart görselleri `categories.image`, server kapakları `servers.banner`
 - **Eklenen (Admin)**: **VIP bitiş filtresi** (`admin-vip-filter`) — bitişe ≤7g kalan VIP sunucuları listeler.
 - **Eklenen (Sayfa)**: **GM Kodları** (`/gm-kodlari`, aranabilir tablo, `GM_CODES`) ve **Blog** (`/blog`, `BLOG_POSTS`, oku/kapat). Header 9-nokta menü + footer linkleri güncellendi. CSS: `.blog-grid/.blog-card*`.
 - Testing agent: iteration_7 8/8 %100.
+### v1.8 — GM kopyala/kategori + Blog detay/şerit
+- **Eklenen (GM Kodları)**: kategori sekmeleri (`gm-cat-<cat>`, GM_CODES'tan türetilir) + her satırda **Kopyala** butonu (`gm-copy-<i>`, `navigator.clipboard`, sonuç toast'a bağlı — başarısızsa hata mesajı).
+- **Eklenen (Blog)**: **Blog detay sayfası** `/blog/:id` (`BlogDetail.jsx`) — tam metin + **sosyal paylaşım** (WhatsApp/X/Facebook + bağlantı kopyala). Liste kartları artık detaya link.
+- **Eklenen (Anasayfa)**: son 3 blog yazısını gösteren **"📚 Son Rehberler & Blog" şeridi** (`.blog-strip`, `home-blog-<id>`, `home-blog-all`).
+- **Düzeltilen (BUG - HIGH, testing agent)**: `navigator.clipboard.writeText` yakalanmamış promise reddi CRA dev overlay'ini açıp tüm tıklamaları kilitliyordu → `.catch` + koşullu toast eklendi.
+- Yeni CSS: `.blog-strip*`, `.blog-detail*`, `.share-bar/.share-btn(--wa/--tw/--fb)`. Rotalar: `/blog/:id`.
+- Testing agent: iteration_8 4/4 %100.

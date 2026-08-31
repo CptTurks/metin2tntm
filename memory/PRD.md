@@ -52,6 +52,9 @@ stack'ine port edecek. React app sadece UI/UX blueprint'idir.
 - Kart VIP köşe rozeti kaldırıldı → sunucu adı renkli (kırmızı/yeşil) + taç. "+N" statik, kart sabit boy.
 - Info popup kuralları admin'den düzenlenir; yan banner /admin'de sayılmaz; admin VIP bitiş filtresi.
 - Yeni sayfalar: GM Kodları (`/gm-kodlari`, aranabilir), Blog (`/blog`). Testing agent iteration_7: 8/8 %100.
+### Bu oturum — v1.8 (GM kopyala/kategori + Blog detay/şerit)
+- GM Kodları: kategori sekmeleri + satır bazlı Kopyala. Blog: detay sayfası `/blog/:id` + sosyal paylaşım; anasayfada rehber şeridi.
+- Clipboard promise reddi (dev overlay dondurması) düzeltildi. Testing agent iteration_8: 4/4 %100.
 
 ## Backlog (kalan tanıtım görevleri)
 - P2: **GM Kodları Sayfası** — aranabilir GM komutları listesi.
