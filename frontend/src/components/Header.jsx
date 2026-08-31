@@ -38,15 +38,15 @@ export default function Header() {
           </Link>
 
           <div className="apps-menu" ref={appsRef}>
-            <button className="icon-btn" aria-label="Uygulamalar" onClick={() => { setAppsOpen((o) => !o); setMenuOpen(false); }}>
+            <button className="icon-btn" data-testid="apps-toggle-btn" aria-label="Uygulamalar" onClick={() => { setAppsOpen((o) => !o); setMenuOpen(false); }}>
               <span className="apps-dots">{Array.from({ length: 9 }).map((_, i) => <span key={i} />)}</span>
             </button>
             <div className={`apps-dropdown ${appsOpen ? 'open' : ''}`} role="menu">
               <div className="apps-title">UYGULAMALARI</div>
               <div className="apps-links">
-                <a className="apps-link apps-link--blog" href="#gm" role="menuitem">✅ GM Kodları</a>
-                <button className="apps-link apps-link--analiz" role="menuitem" onClick={() => { setAppsOpen(false); navigate('/reklam-fiyatlari'); }}>✅ Reklam Fiyatları</button>
-                <a className="apps-link apps-link--forum" href="#blog" role="menuitem">✅ BLOG</a>
+                <button className="apps-link apps-link--blog" data-testid="apps-link-gm" role="menuitem" onClick={() => { setAppsOpen(false); navigate('/gm-kodlari'); }}>✅ GM Kodları</button>
+                <button className="apps-link apps-link--analiz" data-testid="apps-link-reklam" role="menuitem" onClick={() => { setAppsOpen(false); navigate('/reklam-fiyatlari'); }}>✅ Reklam Fiyatları</button>
+                <button className="apps-link apps-link--forum" data-testid="apps-link-blog" role="menuitem" onClick={() => { setAppsOpen(false); navigate('/blog'); }}>✅ BLOG</button>
               </div>
             </div>
           </div>

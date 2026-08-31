@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { SERVERS, ADMIN_BANNERS, ANNOUNCEMENT_SEED, TAXONOMY_SEED } from '../mock/mock';
+import { SERVERS, ADMIN_BANNERS, ANNOUNCEMENT_SEED, TAXONOMY_SEED, INFO_RULES } from '../mock/mock';
 
 const AppContext = createContext(null);
 export const useApp = () => useContext(AppContext);
@@ -11,6 +11,7 @@ const LS_VOTES = 'tm2_votes';
 const LS_BANNERS = 'tm2_banners';
 const LS_ANNOUNCE = 'tm2_announce';
 const LS_TAXONOMY = 'tm2_taxonomy';
+const LS_INFORULES = 'tm2_inforules';
 
 function load(key, fallback) {
   try {
@@ -42,6 +43,7 @@ export function AppProvider({ children }) {
   const [banners, setBanners] = useState(() => load(LS_BANNERS, ADMIN_BANNERS));
   const [announcement, setAnnouncementState] = useState(() => load(LS_ANNOUNCE, ANNOUNCEMENT_SEED));
   const [taxonomy, setTaxonomy] = useState(() => load(LS_TAXONOMY, TAXONOMY_SEED));
+  const [infoRules, setInfoRules] = useState(() => load(LS_INFORULES, INFO_RULES.map((r, i) => ({ id: i + 1, ...r }))));
 
   useEffect(() => localStorage.setItem(LS_SERVERS, JSON.stringify(servers)), [servers]);
   useEffect(() => localStorage.setItem(LS_USER, JSON.stringify(user)), [user]);
@@ -50,6 +52,7 @@ export function AppProvider({ children }) {
   useEffect(() => localStorage.setItem(LS_BANNERS, JSON.stringify(banners)), [banners]);
   useEffect(() => localStorage.setItem(LS_ANNOUNCE, JSON.stringify(announcement)), [announcement]);
   useEffect(() => localStorage.setItem(LS_TAXONOMY, JSON.stringify(taxonomy)), [taxonomy]);
+  useEffect(() => localStorage.setItem(LS_INFORULES, JSON.stringify(infoRules)), [infoRules]);
 
   // ---- Public / oy & tıklama ----
   const voteServer = (id) => {
@@ -123,6 +126,11 @@ export function AppProvider({ children }) {
   const addTaxTag = (gid, name) => setTaxonomy((prev) => prev.map((g) => (g.id === gid ? { ...g, tags: [...g.tags, { id: Date.now(), name }] } : g)));
   const deleteTaxTag = (gid, tid) => setTaxonomy((prev) => prev.map((g) => (g.id === gid ? { ...g, tags: g.tags.filter((t) => t.id !== tid) } : g)));
 
+  // ---- Bilgilendirme kuralları (Sunucu Ekle popup) ----
+  const addInfoRule = () => setInfoRules((prev) => [...prev, { id: Date.now(), icon: 'check', text: 'Yeni kural metni' }]);
+  const updateInfoRule = (id, patch) => setInfoRules((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+  const deleteInfoRule = (id) => setInfoRules((prev) => prev.filter((r) => r.id !== id));
+
   // ---- Üye yönetimi ----
   const updateUserRole = (username, isAdmin) => setUsers((prev) => prev.map((u) => (
     u.username === username ? { ...u, isAdmin, rank: isAdmin ? 'Yönetici' : 'Üye' } : u
@@ -149,13 +157,14 @@ export function AppProvider({ children }) {
   const logout = () => setUser(null);
 
   const value = {
-    servers, user, users, votes, banners, announcement, taxonomy,
+    servers, user, users, votes, banners, announcement, taxonomy, infoRules,
     voteServer, trackClick, addComment, addServer, deleteServer, login, register, logout,
     toggleServerHidden, setServerVip, toggleServerFeatured, updateServerFeaturedSystem,
     deleteComment, toggleCommentHidden,
     addBanner, updateBanner, deleteBanner, toggleBanner, trackBannerClick, trackBannerImpression,
     setAnnouncement,
     addTaxGroup, deleteTaxGroup, addTaxTag, deleteTaxTag,
+    addInfoRule, updateInfoRule, deleteInfoRule,
     updateUserRole, resetUserPassword,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

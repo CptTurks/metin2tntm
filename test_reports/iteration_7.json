@@ -1,0 +1,25 @@
+{
+  "summary": "Frontend-only regression of the 8 requested items on https://metin2-promote.preview.emergentagent.com (Playwright, 1920x900). ALL 8 PASSED: (1) VIP cards no longer have corner KIRMIZI/YESIL VIP badge — DragonPvP name is .srv-name--red, PhoenixMT2 .srv-name--green, both with span.srv-crown 👑; elementFromPoint over each '🟢 N online' stat confirmed no overlapping element. (2) '+N' chip (server-sys-more-308) is static: hover and click produced no extra badges (5 before/hover/after), no 'gizle' text, no .srv-sys-pop, card height unchanged 320px. (3) All 6 .srv-row cards render at uniform height 320px (no shrinking/broken layout). (4) Admin Reklam tab 'Bilgilendirme Kuralları' editor works: edited rule text + added rule appeared in /sunucu-ekle info-modal; icon select change (check→warn) reflected as info-rule__ico--warn in modal; delete reduced rules 4→3 and modal showed 3; info-accept-btn closes modal. (5) Banner impressions exclude /admin: side/other banner impression counts identical after navigating admin tabs and re-entering /admin, but increased (2108→2110, 1508→1510) after visiting public Home. (6) admin-vip-filter: after setting server 311 to Kırmızı with vipUntil=+3 days, filter showed ONLY that 1 row (tier red, until 2026-09-03); toggle off restored all 6 rows. (7) /gm-kodlari: 14 rows, 'ban'→1, 'item'→1, 'zzzzz'→0 with empty state, clearing restored 14; reachable via apps menu and footer link. (8) /blog: 3 blog cards, 'Devamını Oku' expands body (82→228 chars, button becomes 'Kapat'), collapse restores excerpt; footer Blog link present.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home server cards", "issues": ["Cards render at 320px uniform height, larger than the ~236px min-height mentioned in the request — uniform and not broken, just noting the actual value"]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Header apps-menu toggle and menu items had no data-testid; I added apps-toggle-btn / apps-link-gm / apps-link-reklam / apps-link-blog (test-scope fix only).",
+    "Footer AdSlot impression useEffect has empty dep array and captures pathname at mount; behaviour is correct today because AdSlot remounts per route, but if the layout is memoized the /admin skip could silently break — consider adding pathname to deps guard."
+  ],
+  "updated_files": ["/app/frontend/src/components/Header.jsx"],
+  "success_rate": {"backend": "not tested (frontend-only request)", "frontend": "100%"},
+  "seed_data_creation": "Transient localStorage-only edits in a throwaway browser profile: server 311 VIP set to red/+3 days, info rule text edited, 1 rule added then deleted. No shared/persistent data affected (each Playwright context starts with fresh localStorage seeds).",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "mert / 123456 (admin) from /app/memory/test_credentials.md — login worked",
+  "context_for_next_testing_agent": "Popup ad appears on first load in a fresh context; close with Escape or click popup-ad-backdrop (setting sessionStorage tm2_popup_seen=1 before load works, but not after). Each Playwright context has empty localStorage, so admin edits must be made and verified inside the same script run. Apps menu now has data-testid apps-toggle-btn / apps-link-gm / apps-link-blog.",
+  "rca_of_the_issue": "Reported card bug (VIP corner badge overlapping the online counter) is resolved: badge element removed entirely and tier is now conveyed via colored server name + crown; verified via elementFromPoint hit-testing over the online stat in all 6 cards."
+}

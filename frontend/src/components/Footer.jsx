@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { SIDE_BANNERS } from '../mock/mock';
 import { useApp } from '../context/AppContext';
 
@@ -8,9 +8,9 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="footer-inner">
         <div className="footer-links">
-          <a href="#gm">GM Kodları</a>
+          <Link to="/gm-kodlari">GM Kodları</Link>
           <Link to="/reklam-fiyatlari">Reklam Fiyatları</Link>
-          <a href="#blog">Blog</a>
+          <Link to="/blog">Blog</Link>
         </div>
         <div className="footer-center">
           <span className="rights">© 2026 TopMetin2Pvp — Tüm hakları saklıdır</span>
@@ -36,7 +36,8 @@ export function AdSlot({ side }) {
   const pos = side === 'left' ? 'sol' : 'sag';
   const b = banners.find((x) => x.active && x.position === pos);
   const img = b ? b.img : (side === 'left' ? SIDE_BANNERS.left : SIDE_BANNERS.right);
-  React.useEffect(() => { if (b) trackBannerImpression(b.id); /* eslint-disable-next-line */ }, []);
+  const { pathname } = useLocation();
+  React.useEffect(() => { if (b && !pathname.startsWith('/admin')) trackBannerImpression(b.id); /* eslint-disable-next-line */ }, []);
   return (
     <aside className="ad-slot">
       <a

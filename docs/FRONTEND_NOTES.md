@@ -139,3 +139,11 @@ Kategori kart görselleri `categories.image`, server kapakları `servers.banner`
 - **Eklenen**: Admin Server Yönetimi'nde **VIP süre uyarısı** — bitişe ≤7g '⚠ Ng kaldı' (kırmızı), geçmiş '⛔ Süre doldu', ≤30g yeşil bilgi rozeti.
 - **Not**: dev StrictMode'da gösterim sayacı 2x artar (prod build'de olmaz); yan banner /admin görünümünde de sayılır (opsiyonel iyileştirme).
 - Testing agent: iteration_6 6/6 %100.
+### v1.7 — Kart VIP görünümü + admin içerik + GM/Blog
+- **Değişen (BUG)**: Kartta köşedeki "KIRMIZI/YEŞİL VIP" rozeti kaldırıldı (online sayacıyla çakışıyordu). VIP kademe artık **sunucu adının rengiyle** (kırmızı/yeşil) + adın önünde **taç** (👑) ile gösterilir. CSS: `.srv-name--red/--green`, `.srv-crown`.
+- **Değişen**: Sistem rozetlerinde "+N" artık **statik** (tıkla/hover ile açılmıyor; kart büyümüyor). Detayı görmek için sunucu sayfasına girilir. Kartlara sabit `min-height` verildi (üniform boy).
+- **Eklenen**: Sunucu Ekle **bilgilendirme kuralları admin panelinden** düzenlenebilir (Reklam sekmesi; ikon+metin, ekle/sil). Context: `infoRules` + `addInfoRule/updateInfoRule/deleteInfoRule`. InfoModal artık context'ten besleniyor.
+- **Değişen**: Yan banner gösterimleri `/admin`'de sayılmıyor (AdSlot `pathname` guard).
+- **Eklenen (Admin)**: **VIP bitiş filtresi** (`admin-vip-filter`) — bitişe ≤7g kalan VIP sunucuları listeler.
+- **Eklenen (Sayfa)**: **GM Kodları** (`/gm-kodlari`, aranabilir tablo, `GM_CODES`) ve **Blog** (`/blog`, `BLOG_POSTS`, oku/kapat). Header 9-nokta menü + footer linkleri güncellendi. CSS: `.blog-grid/.blog-card*`.
+- Testing agent: iteration_7 8/8 %100.

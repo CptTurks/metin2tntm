@@ -246,3 +246,28 @@ export const TAXONOMY_SEED = [
   { id: 2, name: 'Zorluk', tags: [{ id: 21, name: 'Emek' }, { id: 22, name: 'Orta' }, { id: 23, name: 'Kolay' }] },
   { id: 3, name: 'Ekol', tags: [{ id: 31, name: 'Oldschool' }, { id: 32, name: 'Newschool' }] },
 ];
+
+// GM Kodları (aranabilir liste sayfası)
+export const GM_CODES = [
+  { cmd: '/notice <mesaj>', desc: 'Tüm sunucuya sarı duyuru gönderir.', cat: 'Genel' },
+  { cmd: '/item_drop <vnum> <sayı>', desc: 'Bulunduğun yere eşya düşürür.', cat: 'Eşya' },
+  { cmd: '/give <oyuncu> <vnum> <sayı>', desc: 'Belirtilen oyuncuya eşya verir.', cat: 'Eşya' },
+  { cmd: '/mob <vnum>', desc: 'Bulunduğun yere canavar/boss çağırır.', cat: 'Canavar' },
+  { cmd: '/kill', desc: 'Hedef seçili canavarı anında öldürür.', cat: 'Canavar' },
+  { cmd: '/purge', desc: 'Etraftaki tüm canavarları temizler.', cat: 'Canavar' },
+  { cmd: '/setqf <isim> <değer>', desc: 'Quest flag değerini ayarlar.', cat: 'Quest' },
+  { cmd: '/reload q', desc: 'Questleri yeniden yükler.', cat: 'Quest' },
+  { cmd: '/phase_a', desc: 'Oyuncuyu admin moduna alır (görünmez).', cat: 'Yetki' },
+  { cmd: '/block_chat <oyuncu> <dk>', desc: 'Oyuncunun sohbetini süreli kapatır.', cat: 'Yetki' },
+  { cmd: '/ban <oyuncu> <gün>', desc: 'Hesabı süreli yasaklar.', cat: 'Yetki' },
+  { cmd: '/warp <x> <y>', desc: 'Belirtilen koordinata ışınlanır.', cat: 'Hareket' },
+  { cmd: '/goto <oyuncu>', desc: 'Bir oyuncunun yanına ışınlanır.', cat: 'Hareket' },
+  { cmd: '/event start <isim>', desc: 'Belirtilen eventi başlatır.', cat: 'Event' },
+];
+
+// Blog yazıları (rehber & duyurular)
+export const BLOG_POSTS = [
+  { id: 1, title: 'Metin2 PvP Rehberi: Yeni Başlayanlar İçin', excerpt: 'İlk kez PvP sunucusuna adım atanlar için sınıf seçimi, ekipman ve temel taktikler.', date: '2026-06-02', author: 'mert', tag: 'Rehber', img: 'https://images.unsplash.com/photo-1600081522768-cb2e80ed4491?crop=entropy&cs=srgb&fm=jpg&q=85&w=800', body: 'PvP sunucularında başarılı olmak için önce sınıfını doğru seçmelisin. Savaşçı yakın dövüşte, okçu menzilde, sura dengede öne çıkar. Ekipman efsunlarını PvP odaklı yap ve simya taşlarını ihmal etme. Guild savaşlarına erken katıl.' },
+  { id: 2, title: 'Efsun Sistemi Nasıl Çalışır?', excerpt: 'Sabit ve değişken efsun oranlarının farkı, hangi sunucu tipi kime uygun?', date: '2026-05-28', author: 'mert', tag: 'Sistem', img: 'https://images.unsplash.com/photo-1529981188441-8a2e6fe30103?crop=entropy&cs=srgb&fm=jpg&q=85&w=800', body: 'Sabit efsun oranlarında sonuç bellidir, emek serverlerde tercih edilir. Değişken efsunda şans faktörü yüksektir. Yeni başlayanlar için sabit efsunlu sunucular daha adildir.' },
+  { id: 3, title: 'Sunucunu Nasıl Öne Çıkarırsın?', excerpt: 'VIP paketleri, banner reklamları ve topliste yükselmenin yolları.', date: '2026-05-20', author: 'mert', tag: 'Duyuru', img: 'https://images.unsplash.com/photo-1600081728723-c8aa2ee3236a?crop=entropy&cs=srgb&fm=jpg&q=85&w=800', body: 'Sunucunu ekledikten sonra beğeni toplayarak listede yüksel. VIP paketi ile üst vitrinde renkli çerçeveyle görün. Pop-up ve yan banner reklamlarıyla daha çok ziyaretçiye ulaş.' },
+];

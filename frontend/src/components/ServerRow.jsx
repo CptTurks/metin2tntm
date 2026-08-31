@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Home as HomeIcon, MessageCircle, ThumbsUp, ArrowRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
@@ -8,7 +8,6 @@ import { toast } from 'sonner';
 export default function ServerRow({ s }) {
   const navigate = useNavigate();
   const { voteServer, trackClick, votes } = useApp();
-  const [popOpen, setPopOpen] = useState(false);
   const f = s.features;
   const sys = s.system || {};
   const enabledSys = Object.keys(SYSTEM_FEATURE_LABELS).filter((k) => isVar(sys[k]));
@@ -16,8 +15,7 @@ export default function ServerRow({ s }) {
     ? s.featuredSystem.filter((k) => isVar(sys[k]))
     : enabledSys;
   const shownSys = featuredSys.slice(0, 4);
-  const hiddenSys = enabledSys.filter((k) => !shownSys.includes(k));
-  const extraSys = hiddenSys.length;
+  const extraSys = enabledSys.length - shownSys.length;
 
   const tier = s.vipTier && s.vipTier !== 'none' ? s.vipTier : null;
   const vipClass = tier ? `srv-vip srv-vip--${tier}` : '';
@@ -35,7 +33,6 @@ export default function ServerRow({ s }) {
 
   return (
     <article className={`srv-row ${vipClass}`}>
-      {tier && <span className={`srv-vip-badge srv-vip-badge--${tier}`}>👑 VIP</span>}
       <div className="srv-left">
         <div className="srv-meta">
           <div className="srv-meta-line"><span className="srv-meta-key">⚔️ Başlangıç Seviyesi</span><span className="srv-meta-val">{s.startLevel}. Level</span></div>
@@ -47,26 +44,12 @@ export default function ServerRow({ s }) {
             <a className="srv-badge srv-badge-cat" href={`#${s.category}`} onClick={(e) => { e.preventDefault(); navigate(`/kategori/${s.category}`); }}>🗂️ {CATEGORY_LABELS[s.category]}</a>
           </div>
           {shownSys.length > 0 && (
-            <div className={`srv-sys-badges ${popOpen ? 'open' : ''}`} data-testid={`server-sys-badges-${s.id}`}>
+            <div className="srv-sys-badges" data-testid={`server-sys-badges-${s.id}`}>
               {shownSys.map((k) => (
                 <span key={k} className="srv-sys-badge">✦ {SYSTEM_FEATURE_LABELS[k]}</span>
               ))}
               {extraSys > 0 && (
-                <span
-                  className="srv-sys-badge srv-sys-badge--more srv-sys-more"
-                  data-testid={`server-sys-more-${s.id}`}
-                  title="Tüm sistem özelliklerini gör"
-                  onClick={(e) => { e.stopPropagation(); setPopOpen((o) => !o); }}
-                >
-                  {popOpen ? '− gizle' : `+${extraSys}`}
-                </span>
-              )}
-              {extraSys > 0 && (
-                <span className="srv-sys-extra" data-testid={`server-sys-pop-${s.id}`}>
-                  {hiddenSys.map((k) => (
-                    <span key={k} className="srv-sys-badge">✦ {SYSTEM_FEATURE_LABELS[k]}</span>
-                  ))}
-                </span>
+                <span className="srv-sys-badge srv-sys-badge--more" data-testid={`server-sys-more-${s.id}`} title={`+${extraSys} özellik daha — detay sayfasında`}>+{extraSys}</span>
               )}
             </div>
           )}
@@ -74,7 +57,7 @@ export default function ServerRow({ s }) {
       </div>
 
       <div className="srv-mid">
-        <div className="srv-name" style={{ cursor: 'pointer' }} onClick={() => navigate(`/server/${s.id}`)}>{s.name}</div>
+        <div className={`srv-name ${tier ? `srv-name--${tier}` : ''}`} style={{ cursor: 'pointer' }} onClick={() => navigate(`/server/${s.id}`)}>{tier && <span className="srv-crown">👑</span>}{s.name}</div>
         <a className="srv-banner" href={`/server/${s.id}`} onClick={(e) => { e.preventDefault(); navigate(`/server/${s.id}`); }}>
           <img src={s.banner} alt={s.name} />
         </a>

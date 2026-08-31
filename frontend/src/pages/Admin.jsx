@@ -23,6 +23,7 @@ export default function Admin() {
     deleteComment, toggleCommentHidden, addBanner, deleteBanner, toggleBanner,
     setAnnouncement, addTaxGroup, deleteTaxGroup, addTaxTag, deleteTaxTag,
     updateUserRole, resetUserPassword,
+    infoRules, addInfoRule, updateInfoRule, deleteInfoRule,
   } = useApp();
   const navigate = useNavigate();
   const [tab, setTab] = useState('servers');
@@ -31,6 +32,7 @@ export default function Admin() {
   const [bf, setBf] = useState({ position: 'ust', img: '', url: '', start: '', end: '' });
   const [newGroup, setNewGroup] = useState('');
   const [tagInputs, setTagInputs] = useState({});
+  const [vipSoonOnly, setVipSoonOnly] = useState(false);
 
   if (!user || !user.isAdmin) {
     return (
@@ -43,6 +45,7 @@ export default function Admin() {
 
   const totalComments = servers.reduce((a, s) => a + s.comments.length, 0);
   const totalLikes = servers.reduce((a, s) => a + s.likes, 0);
+  const serverList = vipSoonOnly ? servers.filter((s) => s.vipTier !== 'none' && s.vipUntil && daysLeft(s.vipUntil) <= 7) : servers;
 
   const submitBanner = () => {
     if (!bf.img.trim()) { toast.error('Görsel URL zorunludur.'); return; }
@@ -86,11 +89,16 @@ export default function Admin() {
 
       {/* ---- SERVER YÖNETİMİ ---- */}
       {tab === 'servers' && (
-        <div className="card" style={{ overflowX: 'auto' }}>
+        <>
+          <div className="sort-bar" style={{ marginBottom: 14 }}>
+            <button className={`sort-btn ${vipSoonOnly ? 'active' : ''}`} data-testid="admin-vip-filter" onClick={() => setVipSoonOnly((o) => !o)}>⚠ Süresi Dolmak Üzere (VIP)</button>
+            {vipSoonOnly && <span style={{ fontSize: 12, color: 'var(--muted)' }}>{serverList.length} sunucu listeleniyor</span>}
+          </div>
+          <div className="card" style={{ overflowX: 'auto' }}>
           <table className="data-table">
             <thead><tr><th>ID</th><th>Server</th><th>Kategori</th><th>Durum</th><th>VIP Kademe</th><th>Öneri</th><th>İşlem</th></tr></thead>
             <tbody>
-              {servers.map((s) => (
+              {serverList.map((s) => (
                 <tr key={s.id} data-testid={`admin-server-row-${s.id}`}>
                   <td>#{s.id}</td>
                   <td><Link to={`/server/${s.id}`} style={{ color: 'var(--brand2)', fontWeight: 700 }}>{s.name}</Link></td>
@@ -125,7 +133,8 @@ export default function Admin() {
               ))}
             </tbody>
           </table>
-        </div>
+          </div>
+        </>
       )}
 
       {/* ---- ÜYE YÖNETİMİ ---- */}
@@ -178,6 +187,26 @@ export default function Admin() {
             <div className="card-body">
               <div className="field"><label>Duyuru Metni</label><input className="inp" value={announcement.text} data-testid="admin-announce-text" onChange={(e) => setAnnouncement({ text: e.target.value })} placeholder="Üst barda görünecek duyuru..." /></div>
               <div className="admin-actions"><Switch checked={announcement.active} onChange={() => setAnnouncement({ active: !announcement.active })} testid="admin-announce-toggle" /><span style={{ fontSize: 13, fontWeight: 700 }}>{announcement.active ? 'Yayında' : 'Kapalı'}</span></div>
+            </div>
+          </div>
+
+          <div className="card" style={{ marginBottom: 18 }}>
+            <div className="card-head"><Megaphone size={18} /> Sunucu Ekle Bilgilendirme Kuralları</div>
+            <div className="card-body">
+              {infoRules.map((r) => (
+                <div className="admin-actions" key={r.id} style={{ marginBottom: 10 }}>
+                  <select className="mini-sel" value={r.icon} data-testid={`admin-inforule-icon-${r.id}`} onChange={(e) => updateInfoRule(r.id, { icon: e.target.value })}>
+                    <option value="check">✅ Onay</option>
+                    <option value="warn">⚠ Uyarı</option>
+                    <option value="clock">⏱ Süre</option>
+                    <option value="pin">📌 Not</option>
+                  </select>
+                  <input className="inp" style={{ flex: 1, minWidth: 220 }} value={r.text} data-testid={`admin-inforule-text-${r.id}`} onChange={(e) => updateInfoRule(r.id, { text: e.target.value })} />
+                  <button className="btn btn-danger" style={{ padding: '6px 10px' }} data-testid={`admin-inforule-delete-${r.id}`} onClick={() => deleteInfoRule(r.id)}><Trash2 size={14} /></button>
+                </div>
+              ))}
+              <button className="btn btn-primary" style={{ marginTop: 6 }} data-testid="admin-inforule-add" onClick={addInfoRule}><Plus size={16} /> Kural Ekle</button>
+              <span className="hint">**metin** ile kalın yazabilirsiniz. Değişiklikler /sunucu-ekle popup'ında anında görünür.</span>
             </div>
           </div>
 

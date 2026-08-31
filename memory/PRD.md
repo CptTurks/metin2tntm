@@ -48,6 +48,10 @@ stack'ine port edecek. React app sadece UI/UX blueprint'idir.
 - VIP rozeti sadece "👑 VIP" (renk yeşil/kırmızı). Özellikler 3 durumlu (Var/Yok/**N/A**; N/A hiç gösterilmez).
 - Sunucu Ekle Genel Özellikler'den taksonomi bloğu kaldırıldı. Banner gösterim/tıklama canlı takibi (anasayfa+popup). Admin VIP süre uyarısı.
 - Testing agent iteration_6: 6/6 %100. Özellik değerleri artık `'var'|'yok'|'na'` (helper: `featVal/isVar/isNA`).
+### Bu oturum — v1.7 (kart VIP + admin içerik + GM/Blog)
+- Kart VIP köşe rozeti kaldırıldı → sunucu adı renkli (kırmızı/yeşil) + taç. "+N" statik, kart sabit boy.
+- Info popup kuralları admin'den düzenlenir; yan banner /admin'de sayılmaz; admin VIP bitiş filtresi.
+- Yeni sayfalar: GM Kodları (`/gm-kodlari`, aranabilir), Blog (`/blog`). Testing agent iteration_7: 8/8 %100.
 
 ## Backlog (kalan tanıtım görevleri)
 - P2: **GM Kodları Sayfası** — aranabilir GM komutları listesi.
